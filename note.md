@@ -1,0 +1,1 @@
+execute sequence: init --> app --> board_cfg -> all tasks
