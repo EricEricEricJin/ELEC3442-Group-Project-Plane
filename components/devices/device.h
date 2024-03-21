@@ -26,6 +26,7 @@ struct device
 
 typedef struct device *device_t;
 
+
 int32_t device_init(struct device *object, const char *name);
 device_t device_find(const char *name, uint8_t type);
 void device_detach(device_t object);
