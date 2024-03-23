@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "compare": "c",
-        "drv_pca9685.h": "c"
+        "drv_pca9685.h": "c",
+        "device.h": "c"
     }
 }
