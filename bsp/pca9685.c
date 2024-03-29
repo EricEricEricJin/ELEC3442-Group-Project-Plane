@@ -1,6 +1,5 @@
 #include "pca9685.h"
 
-
 #define INVALID_DEV(dev) ((dev) == NULL || (dev)->fd < 0)
 
 const float freq_fix_coef = 1.071;
@@ -52,6 +51,13 @@ int pca9685_init(pca9685_t dev, uint16_t i2c_addr, uint16_t frequency)
     mode1 |= (1 << 7);
     wiringPiI2CWriteReg8(dev->fd, 0x00, mode1);
 
+    // clear all outputs
+    for (int i = 0; i < 16; i++)
+    {
+        wiringPiI2CWriteReg16(dev->fd, 0x06 + (i << 2), 0);
+        wiringPiI2CWriteReg16(dev->fd, 0x06 + (i << 2) + 2, 0);
+    }
+
     return 0;
 }
 
@@ -83,7 +89,7 @@ int pca9685_send(pca9685_t dev)
 {
     for (int i = 0; i < 16; i++)
     {
-        wiringPiI2CWriteReg16(dev->fd, 0x06 + (i << 2), 0);
+        // wiringPiI2CWriteReg16(dev->fd, 0x06 + (i << 2), 0); already set to 0 in init
         wiringPiI2CWriteReg16(dev->fd, 0x06 + (i << 2) + 2, dev->channel_values[i] & 0xfff);
     }
     return 0;
