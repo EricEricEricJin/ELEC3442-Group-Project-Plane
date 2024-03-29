@@ -1,5 +1,4 @@
 #include "ads7830.h"
-#include <ads1115.h>
 
 #define INVALID_DEV(dev) ((dev) == NULL || (dev)->fd < 0)
 
@@ -25,13 +24,9 @@ int ads7830_init(ads7830_t dev, uint16_t i2c_addr, float vref)
     dev->fd = wiringPiI2CSetup(dev->i2c_addr);
     if (dev->fd < 0)
         return -1;
-
-    // commands
-    // for (int i = 0; i < 8; i++)
-    // {
-    //     wiringPiI2CWrite(dev->fd, 0b10000100 | (i << 4));
-    // }
-
+        
+    dev->vref = vref;
+    
     return 0;
 }
 
@@ -54,9 +49,7 @@ int ads7830_update(ads7830_t dev)
     for (int i = 0; i < 8; i++)
     {
         wiringPiI2CWrite(dev->fd, 0b10000100 | (CH_SEL(i) << 4));
-        printf("sel = %x, ", CH_SEL(i));
         dev->channel_values[i] = wiringPiI2CRead(dev->fd);
-        delay(1);
     }
     return 0;
 }

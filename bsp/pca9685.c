@@ -23,7 +23,7 @@ int pca9685_init(pca9685_t dev, uint16_t i2c_addr, uint16_t frequency)
 
     // set frequency
     uint8_t prescale = 25000000 / (4096 * frequency) - 1;
-    dev->period_us = 1000000 / (25000000 / (4096 * (prescale + 1)) * freq_fix_coef);
+    dev->period_us = 1000000 / (25000000.0f / (4096 * (prescale + 1)) * freq_fix_coef);
 
     if (prescale < 0x03)
         return -1; // 8-bit, will not larger than 0xff.
