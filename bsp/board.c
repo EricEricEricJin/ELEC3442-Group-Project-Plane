@@ -1,9 +1,29 @@
 #include "board.h"
 
-int bd_pca9685_init() { return pca9685_init(&(theboard.dev_pca9685), 0x40, 200); }
+#define PCA9685_ADDR (0x40)
+#define ADS7830_ADDR (0x48)
+
+#define ADC_VREF (3.3f)
+
+#define ADC_VBAT_CH (0)
+#define ADC_VBAT_GAIN (6.10)
+
+#define ADC_I_GAIN (100.0)
+
+#define ADC_VBUS_CH (3)
+#define ADC_VBUS_GAIN (1.75)
+
+#define ADC_VAUX_CH (4)
+#define ADC_VAUX_GAIN (1.51)
+
+float pwm_frequency;
+
+int bd_pca9685_init() { return pca9685_init(&(theboard.dev_pca9685), PCA9685_ADDR, pwm_frequency); }
 int bd_pca9685_routine() { return pca9685_send(&(theboard.dev_pca9685)); }
-int bd_ads7830_init() { return ads7830_init(&(theboard.dev_ads7830), 0x48, 3.3); }
+int bd_ads7830_init() { return ads7830_init(&(theboard.dev_ads7830), ADS7830_ADDR, ADC_VREF); }
 int bd_ads7830_routine() { return ads7830_update(&(theboard.dev_ads7830)); }
+
+static struct board theboard;
 
 void *board_loop();
 
@@ -64,8 +84,18 @@ void *board_loop()
         }
         if (i == 0)
             delay(1);
-        
     }
 }
 
-board_t get_board() {return &theboard;}
+board_t get_board() { return &theboard; }
+
+// PWM functions
+void board_pwm_set_freq(float freq_hz) { pwm_frequency = freq_hz; }
+int board_pwm_set_value(int channel, uint16_t value) { return pca9685_set_value(&theboard.dev_pca9685, channel, value); }
+int board_pwm_set_pw(int channel, uint32_t pw_us) { return pca9685_set_pw(&theboard.dev_pca9685, channel, pw_us); }
+
+// ADC functions
+float board_adc_get_vbus() { return ads7830_get_volt(&theboard.dev_ads7830, ADC_VBUS_CH) * ADC_VBUS_GAIN; }
+float board_adc_get_vbat() { return ads7830_get_volt(&theboard.dev_ads7830, ADC_VBAT_CH) * ADC_VBAT_GAIN; }
+float board_adc_get_vaux() { return ads7830_get_volt(&theboard.dev_ads7830, ADC_VAUX_CH) * ADC_VAUX_GAIN; }
+float board_adc_get_current(current_sensing_ch_t current_ch) { return ads7830_get_volt(&theboard.dev_ads7830, current_ch) * ADC_I_GAIN; }

@@ -21,7 +21,7 @@ struct pca9685
     uint16_t channel_values[16];
 };
 
-int pca9685_init(pca9685_t dev, uint16_t i2c_addr, uint16_t frequency);
+int pca9685_init(pca9685_t dev, uint16_t i2c_addr, float frequency);
 int pca9685_set_value(pca9685_t dev, int channel, uint16_t value); // not occupying can bus!
 int pca9685_set_pw(pca9685_t dev, int channel, uint32_t pw_us);
 int pca9685_send(pca9685_t dev);     // using bus. called regularly in board.c

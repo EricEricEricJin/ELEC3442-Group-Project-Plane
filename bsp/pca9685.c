@@ -4,7 +4,7 @@
 
 const float freq_fix_coef = 1.071;
 
-int pca9685_init(pca9685_t dev, uint16_t i2c_addr, uint16_t frequency)
+int pca9685_init(pca9685_t dev, uint16_t i2c_addr, float frequency)
 {
     if (dev == NULL)
         return -1;

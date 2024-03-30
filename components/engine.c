@@ -1,62 +1,46 @@
 #include "engine.h"
 
-int esc_init(esc_t comp,
-             pca9685_t pwm_dev, int pwm_channel,
-             ads7830_t adc_dev, int adc_channel, float adc_gain,
-             uint32_t zero_pw_us, uint32_t full_pw_us, uint32_t rev_pw_us)
+int engine_init(engine_t comp, int pwm_channel, current_sensing_ch_t current_ch,
+                uint32_t zero_pw_us, uint32_t full_pw_us)
 {
-    if (comp == NULL || full_pw_us <= zero_pw_us || rev_pw_us >= zero_pw_us)
+    if (comp == NULL || full_pw_us <= zero_pw_us)
         return -1;
 
-    memset(comp, 0, sizeof(struct esc));
+    memset(comp, 0, sizeof(struct engine));
 
-    comp->pwm_dev = pwm_dev;
     comp->pwm_channel = pwm_channel;
-
+    comp->current_ch = current_ch;
     comp->zero_pw_us = zero_pw_us;
     comp->full_pw_us = full_pw_us;
-    comp->rev_pw_us = rev_pw_us;
-
-    comp->adc_dev = adc_dev;
-    comp->adc_channel = adc_channel;
-    comp->adc_gain = adc_gain;
 
     // reset engine output
-    if (pca9685_set_pw(pwm_dev, pwm_channel, 0) != 0)
+    if (board_pwm_set_pw(pwm_channel, 0) != 0)
         return -1;
 
     return 0;
 }
 
-int esc_start(esc_t comp)
+int engine_start(engine_t comp) { return board_pwm_set_pw(comp->pwm_channel, comp->zero_pw_us); }
+int engine_stop(engine_t comp) { return board_pwm_set_pw(comp->pwm_channel, 0); }
+
+int esc_set_thrust(engine_t comp, uint16_t thrust)
 {
-    return pca9685_set_pw(comp->pwm_dev, comp->pwm_channel, comp->zero_pw_us);
-}
+    // thrust = thrust > 1 ? 1 : (thrust < -1 ? -1 : thrust);
 
-int esc_stop(esc_t comp)
-{
-    return pca9685_set_pw(comp->pwm_dev, comp->pwm_channel, 0);
-}
-
-int esc_set_thrust(esc_t comp, float thrust)
-{
-    thrust = thrust > 1 ? 1 : (thrust < -1 ? -1 : thrust);
-
-    uint32_t pw = comp->zero_pw_us;
-    if (thrust >= 0) // forward
-        pw += thrust * (comp->full_pw_us - comp->zero_pw_us);
-    else if (comp->rev_pw_us > 0) // reverse and support reverse
-        pw += thrust * (comp->zero_pw_us - comp->rev_pw_us);
-    else // reverse but not support reverse, just zero.
-        thrust = 0;
-
+    // uint32_t pw = comp->zero_pw_us;
+    // if (thrust >= 0) // forward
+    //     pw += thrust * (comp->full_pw_us - comp->zero_pw_us);
+    // else if (comp->rev_pw_us > 0) // reverse and support reverse
+    //     pw += thrust * (comp->zero_pw_us - comp->rev_pw_us);
+    // else // reverse but not support reverse, just zero.
+    //     thrust = 0;
+    uint32_t pw = ((float)thrust / UINT16_MAX) * (comp->full_pw_us - comp->zero_pw_us) + comp->zero_pw_us;
+    if (board_pwm_set_pw(comp->pwm_channel, pw) != E_OK)
+        return -1;
     comp->thrust = thrust;
-    return pca9685_set_pw(comp->pwm_dev, comp->pwm_channel, pw);
+    return 0;
 }
 
-float esc_get_current(esc_t comp)
-{
-    // todo
-}
+uint16_t esc_get_thrust(engine_t comp) { return comp->thrust; }
+float esc_get_current(engine_t comp) { return board_adc_get_current(comp->current_ch); }
 
-float esc_get_thrust(esc_t comp) { return comp->thrust; }
