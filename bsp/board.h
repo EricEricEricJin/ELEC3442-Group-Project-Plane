@@ -12,12 +12,12 @@
 #define E_OK 0
 
 #define MAX_I2C_ROUTINE 8
-typedef enum board_state {
+typedef enum {
     BOARD_RUNNING, 
     BOARD_INITED,
 } board_state_t;
 
-typedef enum current_sensing_ch {
+typedef enum {
     CURRENT_CH1 = 1,
     CURRENT_CH2 = 2,
 } current_sensing_ch_t;
