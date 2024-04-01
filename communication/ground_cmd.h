@@ -11,13 +11,17 @@ struct ground_cmd
     int16_t elevator;
     int16_t aileron;
     int16_t rudder;
-    
-    int16_t throttle_1;
-    int16_t throttle_2;
+
+    uint8_t eng_1;
+    uint8_t eng_2;
+    uint16_t thrust_1;
+    uint16_t thrust_2;
 
     uint8_t op_mode;
+    int16_t trim_elevator;
+    int16_t trim_aileron;
     
-    time_t update_time;
+    uint32_t update_time_ms;
     uint16_t crc16;
 };
 

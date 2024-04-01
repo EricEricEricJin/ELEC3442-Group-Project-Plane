@@ -7,8 +7,10 @@ typedef struct plane_data* plane_data_t;
 
 struct plane_data
 {
-    int16_t gyro_x, gyro_y, gyro_z;
     int16_t accel_x, accel_y, accel_z;
+    int16_t omega_x, omega_y, omega_z;
+    int16_t mag_x, mag_y, mag_z;
+    int16_t angle_x, angle_y, angle_z;
 
     uint16_t tof;
     uint16_t air_spd;
