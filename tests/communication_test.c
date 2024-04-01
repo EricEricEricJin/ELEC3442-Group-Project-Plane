@@ -12,7 +12,7 @@ int main()
 
     int ret;
 
-    ret = communication_init(&comm, &cmd, &data, "127.0.0.1", 1234, 8888);
+    ret = communication_init(&comm, &cmd, &data, "192.168.141.105", 1234, 8888);
     printf("comm init = %d\n", ret);
 
     communication_set_send_rate(&comm, 500000);
