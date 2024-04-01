@@ -1,3 +1,4 @@
+#include <wiringPi.h>
 #include "board.h"
 
 #define PCA9685_ADDR (0x40)
@@ -17,13 +18,13 @@
 #define ADC_VAUX_GAIN (1.51)
 
 float pwm_frequency;
+static struct board theboard;
 
 int bd_pca9685_init() { return pca9685_init(&(theboard.dev_pca9685), PCA9685_ADDR, pwm_frequency); }
 int bd_pca9685_routine() { return pca9685_send(&(theboard.dev_pca9685)); }
 int bd_ads7830_init() { return ads7830_init(&(theboard.dev_ads7830), ADS7830_ADDR, ADC_VREF); }
 int bd_ads7830_routine() { return ads7830_update(&(theboard.dev_ads7830)); }
 
-static struct board theboard;
 
 void *board_loop();
 
@@ -103,4 +104,9 @@ float board_adc_get_current(current_sensing_ch_t current_ch) { return ads7830_ge
 float board_get_cpu_temp()
 {
     return pisystem_get_cpu_temp();
+}
+
+unsigned int board_get_millis()
+{
+    return millis();
 }

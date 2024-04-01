@@ -6,3 +6,6 @@ board_test: board_test.c ../bsp/*
 
 pisystem_test: pisystem_test.c ../bsp/pisystem.c ../bsp/pisystem.h
 	gcc -O3 $^ -I ../bsp/ -o $@
+
+communication_test: communication_test.c ../communication/* ../bsp/*
+	gcc -g -Og $^ -I ../communication/ -I ../bsp/ -lwiringPi -o $@

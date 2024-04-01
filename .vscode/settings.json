@@ -5,6 +5,7 @@
         "device.h": "c",
         "ads1115.h": "c",
         "board.h": "c",
-        "servo.h": "c"
+        "servo.h": "c",
+        "comm_sender.h": "c"
     }
 }

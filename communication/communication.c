@@ -10,6 +10,7 @@
 
 void *send_thread(void* arg)
 {
+    printf("entered send_thread\n");
     communication_t comm = (communication_t)arg;
 
     int ret;
@@ -19,8 +20,9 @@ void *send_thread(void* arg)
         comm->data->crc16 = crc16(comm->crc_value, (const void *)(comm->data), sizeof(struct plane_data) - sizeof(uint16_t));
 
         // send to server
-        ret = sendto(comm->fd, (void *)(comm->data), sizeof(*comm->data), 0, &(comm->addr), sizeof(comm->addr));
+        ret = sendto(comm->fd, (void *)(comm->data), sizeof(*comm->data), 0, (struct sockaddr*)(&comm->addr), sizeof(comm->addr));
 
+        printf("send ret = %d\n", ret);
         // update state
         if (ret < 0)
             comm->state |= COMM_SEND_ERROR;
@@ -33,9 +35,11 @@ void *send_thread(void* arg)
 
 void *recv_thread(void* arg)
 {
+    printf("entered recv_thread\n");
     communication_t comm = (communication_t)arg;
 
     int ret;
+    socklen_t addr_len = sizeof(comm->addr);
     while (comm->state | COMM_STATE_RUNNING)
     {
         /*
@@ -43,7 +47,7 @@ void *recv_thread(void* arg)
             MSG_WAITFORONE: block until at least 1 packet is available
             MSG_DONTWAIT: nonblocking
         */
-        ret = recvfrom(comm->fd, (void *)(comm->cmd_nc), sizeof(*comm->cmd_nc), MSG_WAITALL, &comm->addr, sizeof(comm->addr));
+        ret = recvfrom(comm->fd, (void *)(comm->cmd_nc), sizeof(*comm->cmd_nc), MSG_WAITALL, (struct sockaddr*)(&comm->addr), &addr_len);
         
         if (ret != sizeof(comm->cmd_nc))
         {
@@ -84,7 +88,8 @@ int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data
     comm->addr.sin_addr.s_addr = inet_addr(IP);
 
     comm->cmd_nc = malloc(sizeof(struct ground_cmd));
-
+    comm->cmd = cmd;
+    comm->data = data;
     return 0;
 }
 
