@@ -99,3 +99,8 @@ float board_adc_get_vbus() { return ads7830_get_volt(&theboard.dev_ads7830, ADC_
 float board_adc_get_vbat() { return ads7830_get_volt(&theboard.dev_ads7830, ADC_VBAT_CH) * ADC_VBAT_GAIN; }
 float board_adc_get_vaux() { return ads7830_get_volt(&theboard.dev_ads7830, ADC_VAUX_CH) * ADC_VAUX_GAIN; }
 float board_adc_get_current(current_sensing_ch_t current_ch) { return ads7830_get_volt(&theboard.dev_ads7830, current_ch) * ADC_I_GAIN; }
+
+float board_get_cpu_temp()
+{
+    return pisystem_get_cpu_temp();
+}

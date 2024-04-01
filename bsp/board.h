@@ -8,6 +8,7 @@
 
 #include "pca9685.h"
 #include "ads7830.h"
+#include "pisystem.h"
 
 #define E_OK 0
 
@@ -63,5 +64,6 @@ float board_adc_get_vbat();
 float board_adc_get_vaux();
 float board_adc_get_current(current_sensing_ch_t current_ch); // not ADC ch!
 
+float board_get_cpu_temp();
 
 #endif
