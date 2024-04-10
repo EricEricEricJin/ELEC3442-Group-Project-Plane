@@ -12,6 +12,7 @@
 
 typedef struct plane_data *plane_data_t;
 
+#define DATA_MAX_DELAY_MS (100)
 struct plane_data
 {
     int16_t accel_x, accel_y, accel_z;
@@ -24,6 +25,7 @@ struct plane_data
 
     uint8_t volt_main, volt_bus, volt_aux;
     uint16_t altitude;
+    uint32_t update_time_ms;
     uint16_t crc16;
 };
 

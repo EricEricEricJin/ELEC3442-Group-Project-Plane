@@ -1,44 +1,44 @@
-#include "engine.h"
+#include "esc.h"
 
-int engine_init(engine_t comp, int pwm_channel, current_sensing_ch_t current_ch,
+int esc_init(esc_t comp, int pwm_channel, current_sensing_ch_t current_ch,
                 uint32_t zero_pw_us, uint32_t full_pw_us)
 {
     if (comp == NULL || PWM_INVALID_CH(pwm_channel) || full_pw_us <= zero_pw_us)
         return -1;
 
-    memset(comp, 0, sizeof(struct engine));
+    memset(comp, 0, sizeof(struct esc));
 
     comp->pwm_channel = pwm_channel;
     comp->current_ch = current_ch;
     comp->zero_pw_us = zero_pw_us;
     comp->full_pw_us = full_pw_us;
 
-    // reset engine output
+    // reset esc output
     board_pwm_set_pw(pwm_channel, 0);
-    comp->state = ENGINE_STOPPED;
+    comp->state = ESC_STOPPED;
     return 0;
 }
 
-int engine_start(engine_t comp) {
-    if (comp->state == ENGINE_RUNNING || comp->thrust != 0)
+int esc_start(esc_t comp) {
+    if (comp->state == ESC_RUNNING || comp->thrust != 0)
         return -1;
     if (board_pwm_set_pw(comp->pwm_channel, comp->zero_pw_us) != E_OK)
         return -1;
-    comp->state = ENGINE_RUNNING;
+    comp->state = ESC_RUNNING;
     return 0;
 }
 
-int engine_stop(engine_t comp) {
-    if (comp->state == ENGINE_STOPPED)
+int esc_stop(esc_t comp) {
+    if (comp->state == ESC_STOPPED)
         return -1;
     if (board_pwm_set_pw(comp->pwm_channel, 0) != E_OK)
         return -1;
     comp->thrust = 0;
-    comp->state = ENGINE_STOPPED;
+    comp->state = ESC_STOPPED;
     return 0;
 }
 
-int esc_set_thrust(engine_t comp, float thrust)
+int esc_set_thrust(esc_t comp, float thrust)
 {
     // thrust = thrust > 1 ? 1 : (thrust < -1 ? -1 : thrust);
 
@@ -51,7 +51,7 @@ int esc_set_thrust(engine_t comp, float thrust)
     //     thrust = 0;
 
     thrust = thrust > 1 ? 1 : (thrust < 0  ? 0 : thrust);
-    if (comp->state != ENGINE_RUNNING)
+    if (comp->state != ESC_RUNNING)
         return -1;
 
     uint32_t pw = thrust * (comp->full_pw_us - comp->zero_pw_us) + comp->zero_pw_us;
@@ -61,6 +61,6 @@ int esc_set_thrust(engine_t comp, float thrust)
     return 0;
 }
 
-float esc_get_current(engine_t comp) { return board_adc_get_current(comp->current_ch); }
-int engine_get_state(engine_t comp) {return comp->state; }
-float esc_get_thrust(engine_t comp) { return comp->thrust; }
+float esc_get_current(esc_t comp) { return board_adc_get_current(comp->current_ch); }
+int esc_get_state(esc_t comp) {return comp->state; }
+float esc_get_thrust(esc_t comp) { return comp->thrust; }

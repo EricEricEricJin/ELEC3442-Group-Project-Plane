@@ -1,3 +1,4 @@
+#include "board.h"
 #include "shared_mem.h"
 
 struct mem_line {
@@ -12,6 +13,8 @@ static int count = 0;
 
 #define UNLOCK 0
 #define LOCKED 1
+
+#define WAIT_US 100
 
 int shared_mem_create(int id, size_t size)
 {
@@ -39,14 +42,16 @@ int shared_mem_update(int id, const void* pointer)
     {
         if (id_addr_table[i].id == id)
         {
-            if (id_addr_table[i].lock == UNLOCK)
+            // Wait until released
+            while (id_addr_table[i].lock == LOCKED)
             {
-                id_addr_table[i].lock = LOCKED;
-                memcpy(id_addr_table[i].pointer, pointer, id_addr_table[i].size);
-                id_addr_table[i].lock = UNLOCK;
-                return 0;
+                board_delay_us(WAIT_US);
             }
-            break;
+            
+            id_addr_table[i].lock = LOCKED;
+            memcpy(id_addr_table[i].pointer, pointer, id_addr_table[i].size);
+            id_addr_table[i].lock = UNLOCK;
+            return 0;
         }
     }
     return -1;
@@ -56,11 +61,13 @@ void* shared_mem_get(int id)
 {
     for (int i = 0; i < SHARED_MEM_MAX_OBJ; i++)
     {
-        if (id_addr_table[i].id == id && id_addr_table[i].size != 0)
+        if (id_addr_table[i].id == id)
         {
-            if (id_addr_table[i].lock == UNLOCK)
-                return id_addr_table[i].pointer;
-            break;
+            while (id_addr_table[i].lock == LOCKED)
+            {
+                board_delay_us(WAIT_US);
+            }
+            return id_addr_table[i].pointer;
         }
     }
     return NULL;

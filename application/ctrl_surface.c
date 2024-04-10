@@ -6,10 +6,11 @@
  *****************************************************************************/
 
 #include "ctrl_surface.h"
+#include "communication.h"
 
 void ctrl_surface_init(ctrl_surface_t ctrl_surface, struct pid_param pid_param)
 {
-    ctrl_surface->mode = CTRL_SURFACE_MODE_OFF;
+    ctrl_surface->mode = OPMODE_MANUAL;
     pid_struct_init(&ctrl_surface->pid, pid_param.max_out, pid_param.integral_limit, pid_param.p, pid_param.i, pid_param.d);
     ctrl_surface->input = 0.0f;
     ctrl_surface->pos_feedback = 0.0f;
@@ -22,10 +23,10 @@ float ctrl_surface_calculate(ctrl_surface_t ctrl_surface)
 
     switch (ctrl_surface->mode)
     {
-    case CTRL_SURFACE_MODE_STABILIZE:
+    case OPMODE_STABILIZE:
         break;
 
-    case CTRL_SURFACE_MODE_LOCK_ATT:
+    case OPMODE_LOCK_ATT:
         break;
 
     default: // OFF

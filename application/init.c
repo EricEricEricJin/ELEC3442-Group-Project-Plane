@@ -11,6 +11,11 @@
 #include "plane_task.h"
 #include "sensor_task.h"
 #include "communication.h"
+#include "shared_mem.h"
+#include "msg_id.h"
+
+#include "plane_data.h"
+#include "ground_cmd.h"
 
 pthread_t sensor_thread, plane_thread, comm_thread;
 
@@ -24,6 +29,10 @@ void task_init()
 
 void sys_init()
 {
+    // create shared memories
+    shared_mem_create(CMD_MSG_ID, sizeof(struct ground_cmd));
+    shared_mem_create(DATA_MSG_ID, sizeof(struct plane_data));
+
     // sensor task init
     pthread_create(&sensor_thread, NULL, sensor_task, NULL);
     // todo: add parameter
