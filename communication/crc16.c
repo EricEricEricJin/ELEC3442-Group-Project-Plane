@@ -1,6 +1,3 @@
-#include <stdint.h>
-#include <stdlib.h>
-
 /*
  * Copyright (C) 2016 Apple Inc. All rights reserved.
  *
@@ -14,6 +11,9 @@
  * CRC-16-ANSI (aka CRC-16-IBM) Polynomial: x^16 + x^15 + x^2 + 1
  * Derived from Craig Marciniak's "Craig's Portable CRC16 Library."
  */
+
+#include <stdint.h>
+#include <stdlib.h>
 
 static uint16_t crc16_tab[256] = {
     0x0000, 0xc0c1, 0xc181, 0x0140, 0xc301, 0x03c0, 0x0280, 0xc241,

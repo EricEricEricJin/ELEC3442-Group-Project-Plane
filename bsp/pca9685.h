@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (C) 2024 Eric Jin <https://github.com/ericericericjin>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified copies
+ * of this program, and changing it is allowed as long as the name is changed.
+ *****************************************************************************/
+
 #ifndef __PCA9685_H__
 #define __PCA9685_H__
 
@@ -24,6 +31,6 @@ struct pca9685
 int pca9685_init(pca9685_t dev, uint16_t i2c_addr, float frequency);
 int pca9685_set_value(pca9685_t dev, int channel, uint16_t value); // not occupying can bus!
 int pca9685_set_pw(pca9685_t dev, int channel, uint32_t pw_us);
-int pca9685_send(pca9685_t dev);     // using bus. called regularly in board.c
+int pca9685_send(pca9685_t dev); // using bus. called regularly in board.c
 
 #endif

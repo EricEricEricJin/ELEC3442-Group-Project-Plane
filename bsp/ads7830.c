@@ -1,16 +1,22 @@
+/******************************************************************************
+ * Copyright (C) 2024 Eric Jin <https://github.com/ericericericjin>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified copies
+ * of this program, and changing it is allowed as long as the name is changed.
+ *****************************************************************************/
+
 #include "ads7830.h"
 
 #define INVALID_DEV(dev) ((dev) == NULL || (dev)->fd < 0)
 
-#define CH_SEL(x) ((x)==0 ? 0b000 : \
-                   (x)==1 ? 0b100 : \
-                   (x)==2 ? 0b001 : \
-                   (x)==3 ? 0b101 : \
-                   (x)==4 ? 0b010 : \
-                   (x)==5 ? 0b110 : \
-                   (x)==6 ? 0b011 : \
-                   (x)==7 ? 0b111 : 0)
-
+#define CH_SEL(x) ((x) == 0 ? 0b000 : (x) == 1 ? 0b100 \
+                                  : (x) == 2   ? 0b001 \
+                                  : (x) == 3   ? 0b101 \
+                                  : (x) == 4   ? 0b010 \
+                                  : (x) == 5   ? 0b110 \
+                                  : (x) == 6   ? 0b011 \
+                                  : (x) == 7   ? 0b111 \
+                                               : 0)
 
 int ads7830_init(ads7830_t dev, uint16_t i2c_addr, float vref)
 {
@@ -24,9 +30,9 @@ int ads7830_init(ads7830_t dev, uint16_t i2c_addr, float vref)
     dev->fd = wiringPiI2CSetup(dev->i2c_addr);
     if (dev->fd < 0)
         return -1;
-        
+
     dev->vref = vref;
-    
+
     return 0;
 }
 

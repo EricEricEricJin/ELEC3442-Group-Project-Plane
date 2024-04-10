@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (C) 2024 Eric Jin <https://github.com/ericericericjin>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified copies
+ * of this program, and changing it is allowed as long as the name is changed.
+ *****************************************************************************/
+
 #ifndef __CTRL_SURFACE_H__
 #define __CTRL_SURFACE_H__
 
@@ -5,9 +12,10 @@
 #include "pid.h"
 #include "servo.h"
 
-typedef struct ctrl_surface* ctrl_surface_t;
+typedef struct ctrl_surface *ctrl_surface_t;
 
-enum {
+enum
+{
     CTRL_SURFACE_MODE_OFF,
     CTRL_SURFACE_MODE_STABILIZE,
     CTRL_SURFACE_MODE_LOCK_ATT,
@@ -22,7 +30,6 @@ struct ctrl_surface
     float input;
     float pos_feedback, spd_feedback;
 };
-
 
 void ctrl_surface_init(ctrl_surface_t ctrl_surface, struct pid_param pid_param);
 

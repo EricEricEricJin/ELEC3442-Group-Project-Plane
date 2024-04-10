@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (C) 2024 Eric Jin <https://github.com/ericericericjin>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified copies
+ * of this program, and changing it is allowed as long as the name is changed.
+ *****************************************************************************/
+
 #include "ctrl_surface.h"
 
 void ctrl_surface_init(ctrl_surface_t ctrl_surface, struct pid_param pid_param)
@@ -36,11 +43,11 @@ int ctrl_surface_set_mode(ctrl_surface_t ctrl_surface, int mode)
 
 int ctrl_surface_set_feedback(ctrl_surface_t ctrl_surface, float pos_feedback, float spd_feedback)
 {
-    ctrl_surface->pos_feedback = pos_feedback; 
-    ctrl_surface->spd_feedback = spd_feedback; 
+    ctrl_surface->pos_feedback = pos_feedback;
+    ctrl_surface->spd_feedback = spd_feedback;
 }
 
-int ctrl_surface_set_input(ctrl_surface_t ctrl_surface, float input) 
+int ctrl_surface_set_input(ctrl_surface_t ctrl_surface, float input)
 {
     ctrl_surface->input = input;
 }

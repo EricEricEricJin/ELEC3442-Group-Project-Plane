@@ -1,9 +1,16 @@
+/******************************************************************************
+ * Copyright (C) 2024 Eric Jin <https://github.com/ericericericjin>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified copies
+ * of this program, and changing it is allowed as long as the name is changed.
+ *****************************************************************************/
+
 #ifndef __PLANE_DATA_H__
 #define __PLANE_DATA_H__
 
 #include <stdint.h>
 
-typedef struct plane_data* plane_data_t;
+typedef struct plane_data *plane_data_t;
 
 struct plane_data
 {
@@ -19,8 +26,5 @@ struct plane_data
     uint16_t altitude;
     uint16_t crc16;
 };
-
-
-
 
 #endif

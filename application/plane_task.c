@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (C) 2024 Eric Jin <https://github.com/ericericericjin>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified copies
+ * of this program, and changing it is allowed as long as the name is changed.
+ *****************************************************************************/
+
 #include <stdlib.h>
 #include "plane_task.h"
 #include "board.h"
@@ -7,41 +14,38 @@
 
 #define TASK_CYCLE_PERIOD 5
 
-struct pid_param aileron_param = 
-{
-    .p = 1.0f,
-    .i = 0.1f,
-    .max_out = 1.0f,
-    .integral_limit = 0.1f
-};
+struct pid_param aileron_param =
+    {
+        .p = 1.0f,
+        .i = 0.1f,
+        .max_out = 1.0f,
+        .integral_limit = 0.1f};
 
-struct pid_param rudder_param = 
-{
-    .p = 1.0f,
-    .i = 0.1f,
-    .max_out = 1.0f,
-    .integral_limit = 0.1f
-};
+struct pid_param rudder_param =
+    {
+        .p = 1.0f,
+        .i = 0.1f,
+        .max_out = 1.0f,
+        .integral_limit = 0.1f};
 
-struct pid_param elevator_param = 
-{
-    .p = 1.0f,
-    .i = 0.1f,
-    .max_out = 1.0f,
-    .integral_limit = 0.1f
-};
+struct pid_param elevator_param =
+    {
+        .p = 1.0f,
+        .i = 0.1f,
+        .max_out = 1.0f,
+        .integral_limit = 0.1f};
 
 struct communication comm;
 struct ground_cmd cmd;
 struct plane_data data;
 
-const char* IP = "127.0.0.1";
+const char *IP = "127.0.0.1";
 const uint16_t PORT = 1234;
 
 struct ctrl_surface ctrl_aileron, ctrl_elevator, ctrl_rudder;
 struct servo servo_aileron_left, servo_aileron_right, servo_elevator, servo_rudder;
 
-void plane_task(void const* argument)
+void plane_task(void const *argument)
 {
     // Initialize controllers
     ctrl_surface_init(&ctrl_aileron, aileron_param);
@@ -73,14 +77,14 @@ void plane_task(void const* argument)
             servo_turn_off(&servo_rudder);
             goto task_loop_end;
         }
-        
+
         // Keep servos on
         servo_turn_on(&servo_aileron_left);
         servo_turn_on(&servo_aileron_right);
         servo_turn_on(&servo_elevator);
         servo_turn_on(&servo_rudder);
-    
-        // update controller 
+
+        // update controller
         ctrl_surface_set_input(&ctrl_aileron, cmd.aileron);
         ctrl_surface_set_feedback(&ctrl_aileron, data.angle_x, data.omega_x);
 
@@ -95,15 +99,14 @@ void plane_task(void const* argument)
         aileron_out = ctrl_surface_calculate(&ctrl_aileron);
         elevator_out = ctrl_surface_calculate(&ctrl_elevator);
         rudder_out = ctrl_surface_calculate(&ctrl_rudder);
-        
+
         // Apply to actuators
         servo_set_deg_trimmed(&servo_aileron_left, aileron_out * 45.0f);
         servo_set_deg_trimmed(&servo_aileron_right, aileron_out * (-45.0f));
         servo_set_deg_trimmed(&servo_elevator, elevator_out * 45.0f);
         servo_set_deg_trimmed(&servo_rudder, rudder_out * 45.0f);
 
-        task_loop_end:
+    task_loop_end:
         board_delay_ms(TASK_CYCLE_PERIOD);
     }
-    
 }

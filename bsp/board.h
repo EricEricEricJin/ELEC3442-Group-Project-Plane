@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (C) 2024 Eric Jin <https://github.com/ericericericjin>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified copies
+ * of this program, and changing it is allowed as long as the name is changed.
+ *****************************************************************************/
+
 #ifndef __BOARD_H__
 #define __BOARD_H__
 
@@ -13,12 +20,14 @@
 #define E_OK 0
 
 #define MAX_I2C_ROUTINE 8
-typedef enum {
-    BOARD_RUNNING, 
+typedef enum
+{
+    BOARD_RUNNING,
     BOARD_INITED,
 } board_state_t;
 
-typedef enum {
+typedef enum
+{
     CURRENT_CH1 = 1,
     CURRENT_CH2 = 2,
 } current_sensing_ch_t;
@@ -31,13 +40,13 @@ struct board
 {
     struct pca9685 dev_pca9685;
     struct ads7830 dev_ads7830;
-    
+
     i2c_init_func i2c_init_func_list[MAX_I2C_ROUTINE];
     i2c_routine_func i2c_routine_func_list[MAX_I2C_ROUTINE];
-    
+
     unsigned int i2c_period_list[MAX_I2C_ROUTINE]; // ms
     unsigned int i2c_update_time_list[MAX_I2C_ROUTINE];
-    
+
     pthread_t thread_id;
     int i2c_routine_cnt;
     board_state_t state;

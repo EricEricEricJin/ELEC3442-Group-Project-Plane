@@ -1,3 +1,10 @@
+/******************************************************************************
+ * Copyright (C) 2024 Eric Jin <https://github.com/ericericericjin>
+ *
+ * Everyone is permitted to copy and distribute verbatim or modified copies
+ * of this program, and changing it is allowed as long as the name is changed.
+ *****************************************************************************/
+
 #include <pthread.h>
 
 #include "init.h"
@@ -10,10 +17,9 @@ pthread_t sensor_thread, plane_thread, comm_thread;
 void task_init()
 {
     // start communication
-    
-    // start plane task 
-    pthread_create(plane_thread, NULL, plane_task, NULL);
 
+    // start plane task
+    pthread_create(plane_thread, NULL, plane_task, NULL);
 }
 
 void sys_init()
