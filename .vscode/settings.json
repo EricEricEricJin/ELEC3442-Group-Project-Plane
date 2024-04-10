@@ -6,6 +6,7 @@
         "ads1115.h": "c",
         "board.h": "c",
         "servo.h": "c",
-        "comm_sender.h": "c"
+        "comm_sender.h": "c",
+        "cmath": "c"
     }
 }

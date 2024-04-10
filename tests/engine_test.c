@@ -18,8 +18,8 @@ int main()
 		scanf("%d", &power);
 		if (power < 0 || power > 100)
 			break;
-		board_pwm_set_pw(0, 1000+10*power);
-		board_pwm_set_pw(1, 1000+10*power);
+		board_pwm_set_pw(14, 1000+10*power);
+		board_pwm_set_pw(15, 1000+10*power);
 		i2 = board_adc_get_current(CURRENT_CH2);
 		i1 = board_adc_get_current(CURRENT_CH1);
 		printf("i1 = %f, i2 = %f\n", i1, i2);

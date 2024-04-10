@@ -13,6 +13,7 @@ enum
     COMM_STATE_RUNNING = 1 << 0,
     COMM_RECV_ERROR = 1 << 1,
     COMM_SEND_ERROR = 1 << 2,
+    COMM_RECV_TIMEOUT = 1 << 3,
 };
 
 struct communication
@@ -41,6 +42,7 @@ int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data
                        const char *IP, uint16_t port, uint16_t crc_value);
 void communication_set_send_rate(communication_t comm, unsigned int send_period_us);
 int communication_start(communication_t comm);
+int communication_get_state(communication_t comm);
 int communication_stop(communication_t comm);
 void communication_deinit(communication_t comm);
 
