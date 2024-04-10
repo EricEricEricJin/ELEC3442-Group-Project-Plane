@@ -36,7 +36,7 @@ void *recv_thread(void *arg)
     communication_t comm = (communication_t)arg;
 
     int ret;
-    socklen_t seraddrlen = sizeof(comm->server_addr);   // server address length
+    socklen_t seraddrlen = sizeof(comm->server_addr); // server address length
 
     while (comm->state | COMM_STATE_RUNNING)
     {
@@ -116,6 +116,8 @@ int communication_start(communication_t comm)
     ret |= pthread_create(&comm->tid_recv, NULL, recv_thread, (void *)comm);
     return ret;
 }
+
+int communication_get_state(communication_t comm) { return comm->state; }
 
 int communication_stop(communication_t comm)
 {

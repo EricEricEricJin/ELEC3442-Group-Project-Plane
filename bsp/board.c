@@ -25,7 +25,6 @@ int bd_pca9685_routine() { return pca9685_send(&(theboard.dev_pca9685)); }
 int bd_ads7830_init() { return ads7830_init(&(theboard.dev_ads7830), ADS7830_ADDR, ADC_VREF); }
 int bd_ads7830_routine() { return ads7830_update(&(theboard.dev_ads7830)); }
 
-
 void *board_loop();
 
 int board_init()
@@ -110,3 +109,6 @@ unsigned int board_get_millis()
 {
     return millis();
 }
+
+void board_delay_ms(unsigned int ms) { delay(ms); }
+void board_delay_us(unsigned int us) { delayMicroseconds(us); }

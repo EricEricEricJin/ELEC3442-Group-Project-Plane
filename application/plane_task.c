@@ -103,7 +103,7 @@ void plane_task(void const* argument)
         servo_set_deg_trimmed(&servo_rudder, rudder_out * 45.0f);
 
         task_loop_end:
-        usleep(TASK_CYCLE_PERIOD); // change to sleep_to later
+        board_delay_ms(TASK_CYCLE_PERIOD);
     }
     
 }

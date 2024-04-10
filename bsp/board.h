@@ -66,5 +66,7 @@ float board_adc_get_current(current_sensing_ch_t current_ch); // not ADC ch!
 
 float board_get_cpu_temp();
 unsigned int board_get_millis();
+void board_delay_ms(unsigned int ms);
+void board_delay_us(unsigned int us);
 
 #endif
