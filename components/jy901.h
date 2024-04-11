@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <pthread.h>
 
 enum {
     JY901_ORIENT_H,
@@ -33,10 +34,12 @@ struct jy901
     int fd;
 
     struct jy901_data_raw raw_data;
+    pthread_mutex_t lock;
 
 };
 
 int jy901_init(jy901_t dev, uint16_t i2c_addr, uint16_t orient, uint16_t axis6);
 int jy901_cal(jy901_t dev);
+int jy901_update(jy901_t dev);
 
 #endif
