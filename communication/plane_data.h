@@ -13,7 +13,7 @@
 typedef struct plane_data *plane_data_t;
 
 #define DATA_MAX_DELAY_MS (100)
-struct plane_data
+struct __attribute__((__packed__)) plane_data
 {
     int16_t accel_x, accel_y, accel_z;
     int16_t omega_x, omega_y, omega_z;

@@ -40,11 +40,12 @@
 
 int communication_send(communication_t comm)
 {
+    printf("fd = %d\n", comm->fd);
     // append checksum
     comm->data->crc16 = crc16(comm->crc_value, (const void *)(comm->data), sizeof(struct plane_data) - sizeof(uint16_t));
     // send to server
     int ret = sendto(comm->fd, (void *)(comm->data), sizeof(*comm->data), 0, (struct sockaddr *)(&comm->server_addr), sizeof(comm->server_addr));
-
+    printf("communication ret = %d \n", ret);
     // update state
     if (ret < 0)
         comm->state |= COMM_SEND_ERROR;
@@ -97,6 +98,8 @@ int communication_send(communication_t comm)
 
 int communication_recv(communication_t comm) // is blocking!
 {
+    // sleep(1);
+    // return 0;
     int ret;
     socklen_t seraddrlen = sizeof(comm->server_addr); // server address length
     /*
@@ -107,6 +110,7 @@ int communication_recv(communication_t comm) // is blocking!
 
     // receive from server
     ret = recvfrom(comm->fd, (void *)(comm->cmd), sizeof(*comm->cmd), MSG_WAITALL, (struct sockaddr *)&comm->server_addr, &seraddrlen);
+    printf("communication ret = %d \n", ret);
     if (ret != sizeof(comm->cmd))
     {
         // receive error
@@ -131,8 +135,8 @@ int communication_recv(communication_t comm) // is blocking!
     }
 }
 
-int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data,
-                       const char *IP, uint16_t port, uint16_t crc_value, unsigned int send_period_us)
+int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data, uint16_t my_port,
+                     const char* server_ip, uint16_t server_port, uint16_t crc_value, unsigned int send_period_us)
 {
     // Initialize struct and socket
     memset(comm, 0, sizeof(struct communication));
@@ -143,7 +147,7 @@ int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data
     // Configure and Bind plane address
     memset(&comm->my_addr, 0, sizeof(comm->my_addr));
     comm->my_addr.sin_family = AF_INET;
-    comm->my_addr.sin_port = htons(port);
+    comm->my_addr.sin_port = htons(my_port);
     comm->my_addr.sin_addr.s_addr = INADDR_ANY;
     if (bind(comm->fd, (struct sockaddr *)&comm->my_addr, sizeof(comm->my_addr)) < 0)
         return -1;
@@ -151,12 +155,14 @@ int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data
     // Configure server address
     memset(&comm->server_addr, 0, sizeof(comm->server_addr));
     comm->server_addr.sin_family = AF_INET;
-    comm->server_addr.sin_port = htons(port);
-    comm->server_addr.sin_addr.s_addr = inet_addr(IP);
+    comm->server_addr.sin_port = htons(server_port);
+    comm->server_addr.sin_addr.s_addr = inet_addr(server_ip);
 
     comm->cmd = cmd;
     comm->data = data;
     comm->period_us = send_period_us;
+
+    printf("communication inited!\n");
 
     return 0;
 }

@@ -22,7 +22,7 @@ enum
     OPMODE_LOCK_ATT = 2,
 };
 
-struct ground_cmd
+struct __attribute__((__packed__)) ground_cmd
 {
     int eng_1 : 1;
     int eng_2 : 1;
