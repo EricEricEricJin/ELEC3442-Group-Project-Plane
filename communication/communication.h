@@ -30,7 +30,6 @@ struct communication
     struct sockaddr_in my_addr;
 
     ground_cmd_t cmd;
-    ground_cmd_t cmd_nc; // not checked
     unsigned int last_update_time;
 
     plane_data_t data;
@@ -46,12 +45,15 @@ struct communication
 };
 
 int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data,
-                       const char *IP, uint16_t port, uint16_t crc_value);
-void communication_set_send_rate(communication_t comm, unsigned int send_period_us);
-int communication_start(communication_t comm);
-int communication_get_state(communication_t comm);
-int communication_stop(communication_t comm);
-void communication_deinit(communication_t comm);
+                       const char *IP, uint16_t port, uint16_t crc_value, unsigned int send_period_us);
+// void communication_set_send_rate(communication_t comm, unsigned int send_period_us);
+// int communication_start(communication_t comm);
+// int communication_get_state(communication_t comm);
+// int communication_stop(communication_t comm);
+int communication_send(communication_t comm);
+int communication_recv(communication_t comm);
+
+// void communication_deinit(communication_t comm);
 
 uint16_t crc16(uint16_t crc, const void *buf, size_t size);
 

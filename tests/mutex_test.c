@@ -6,7 +6,7 @@ pthread_mutex_t mutex;
 
 int count;
 
-void *thread_run(void *arg)
+void thread_run(void *arg)
 {
     int i;
     pthread_mutex_lock(&mutex);
@@ -16,14 +16,14 @@ void *thread_run(void *arg)
         sleep(1);
     }
     pthread_mutex_unlock(&mutex);
-    return 0;
 }
 
 int main(int argc, char *argv[])
 {
     pthread_t thread1;
     pthread_mutex_init(&mutex, 0);
-    pthread_create(&thread1, NULL, thread_run, 0);
+    // pthread_create(&thread1, NULL, &thread_run, 0);
+    pthread_create(&thread1, NULL, (void*(*)(void*))&thread_run, 0);
     
     printf("started\n");
     sleep(1);
