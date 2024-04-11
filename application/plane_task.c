@@ -81,28 +81,28 @@ void plane_task(void const *argument)
     int comm_state;
     float aileron_out, elevator_out, rudder_out;
 
-    plane_data_t data;
-    ground_cmd_t cmd;
+    struct plane_data data;
+    struct ground_cmd cmd;
 
     while (1)
     {
         // Update command and data
-        cmd = (ground_cmd_t)shared_mem_get(CMD_MSG_ID);
-        data = (plane_data_t)shared_mem_get(DATA_MSG_ID);
+        shared_mem_get(CMD_MSG_ID, (void*)&cmd);
+        shared_mem_get(DATA_MSG_ID, (void*)&data);
 
         // consider as plane offlined if command error or time out
-        if (cmd == NULL || board_get_millis() - cmd->update_time_ms > CMD_MAX_DELAY_MS)
+        if (board_get_millis() - cmd.update_time_ms > CMD_MAX_DELAY_MS)
         {
             offline_task();
             goto task_loop_end;
         }
 
         // force to manual mode if cannot get sensor data
-        if (data == NULL || board_get_millis() - data->update_time_ms > DATA_MAX_DELAY_MS)
+        if (board_get_millis() - data.update_time_ms > DATA_MAX_DELAY_MS)
         {
-            cmd->opmode_elevator = OPMODE_MANUAL;
-            cmd->opmode_aileron = OPMODE_MANUAL;
-            cmd->opmode_rudder = OPMODE_MANUAL;
+            cmd.opmode_elevator = OPMODE_MANUAL;
+            cmd.opmode_aileron = OPMODE_MANUAL;
+            cmd.opmode_rudder = OPMODE_MANUAL;
         }
 
         offline = 0;
@@ -114,19 +114,19 @@ void plane_task(void const *argument)
         servo_turn_on(&servo_rudder);
 
         // update elevator
-        ctrl_surface_set_mode(&ctrl_aileron, cmd->opmode_elevator);
-        ctrl_surface_set_input(&ctrl_elevator, cmd->elevator);
-        ctrl_surface_set_feedback(&ctrl_elevator, data->angle_y, data->omega_y);
+        ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_elevator);
+        ctrl_surface_set_input(&ctrl_elevator, cmd.elevator);
+        ctrl_surface_set_feedback(&ctrl_elevator, data.angle_y, data.omega_y);
 
         // update aileron
-        ctrl_surface_set_mode(&ctrl_aileron, cmd->opmode_aileron);
-        ctrl_surface_set_input(&ctrl_aileron, cmd->aileron);
-        ctrl_surface_set_feedback(&ctrl_aileron, data->angle_x, data->omega_x);
+        ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_aileron);
+        ctrl_surface_set_input(&ctrl_aileron, cmd.aileron);
+        ctrl_surface_set_feedback(&ctrl_aileron, data.angle_x, data.omega_x);
 
         // update rudder
-        ctrl_surface_set_mode(&ctrl_rudder, cmd->opmode_rudder);
-        ctrl_surface_set_input(&ctrl_rudder, cmd->rudder);
-        ctrl_surface_set_feedback(&ctrl_rudder, data->angle_z, data->omega_z);
+        ctrl_surface_set_mode(&ctrl_rudder, cmd.opmode_rudder);
+        ctrl_surface_set_input(&ctrl_rudder, cmd.rudder);
+        ctrl_surface_set_feedback(&ctrl_rudder, data.angle_z, data.omega_z);
         // Currently use imu heading, change to magnetic heading later
 
         // Calculate outputs
@@ -141,17 +141,17 @@ void plane_task(void const *argument)
         servo_set_deg_trimmed(&servo_rudder, rudder_out * 45.0f);
 
         // Set engines
-        if (cmd->eng_1)
+        if (cmd.eng_1)
             esc_start(&engine_1);
         else
             esc_stop(&engine_1);
-        if (cmd->eng_2)
+        if (cmd.eng_2)
             esc_start(&engine_2);
         else
             esc_stop(&engine_2);
 
-        esc_set_thrust(&engine_1, (float)(cmd->thrust_1) / UINT16_MAX);
-        esc_set_thrust(&engine_2, (float)(cmd->thrust_1) / UINT16_MAX);
+        esc_set_thrust(&engine_1, (float)(cmd.thrust_1) / UINT16_MAX);
+        esc_set_thrust(&engine_2, (float)(cmd.thrust_2) / UINT16_MAX);
 
     task_loop_end:
         board_delay_ms(TASK_CYCLE_PERIOD);
