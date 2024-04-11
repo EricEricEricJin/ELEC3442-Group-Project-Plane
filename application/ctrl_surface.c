@@ -19,7 +19,7 @@ void ctrl_surface_init(ctrl_surface_t ctrl_surface, struct pid_param pid_param)
 
 float ctrl_surface_calculate(ctrl_surface_t ctrl_surface)
 {
-    float output;
+    float output = 0;
 
     switch (ctrl_surface->mode)
     {
@@ -33,6 +33,8 @@ float ctrl_surface_calculate(ctrl_surface_t ctrl_surface)
         output = ctrl_surface->input;
         break;
     }
+
+    printf("ctrl_surface calculate");
 
     return output;
 }

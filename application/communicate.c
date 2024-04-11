@@ -6,30 +6,40 @@
 #include "plane_data.h"
 #include "ground_cmd.h"
 
+const char* IP = "127.0.0.1";
+const uint16_t PORT = 1234;
+
 struct communication ct_comm;
 struct plane_data ct_data;
 struct ground_cmd ct_cmd;
 
 void communicate_task_init()
 {
-    communication_init(&ct_comm, &ct_cmd, &ct_data, "127.0.0.1", 1234, 0xffff, 50000);
+    int ret = communication_init(&ct_comm, &ct_cmd, &ct_data, IP, PORT, 0xffff, 500000);
+    printf("communicate task init = ret\n");
 }
 
 void communicate_send_task(void const *argument)
 {
+    printf("communicate send task start \n");
     while (1)
     {
         shared_mem_get(DATA_MSG_ID, ct_comm.data);
         communication_send(&ct_comm);
         usleep(ct_comm.period_us);
+
+        printf("communicate send task loop \n");
     }
 }
 
 void communicate_recv_task(void const *argument)
-{
+{       
+    printf("communicate recv task start \n");
     while (1)
     {
         communication_recv(&ct_comm);
         shared_mem_update(CMD_MSG_ID, ct_comm.cmd);
+
+        printf("communicate recv task loop \n");
     }
 }

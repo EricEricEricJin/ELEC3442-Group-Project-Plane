@@ -45,8 +45,8 @@ struct communication comm;
 struct ground_cmd cmd;
 struct plane_data data;
 
-const char *IP = "127.0.0.1";
-const uint16_t PORT = 1234;
+// const char *IP = "127.0.0.1";
+// const uint16_t PORT = 1234;
 
 struct ctrl_surface ctrl_aileron, ctrl_elevator, ctrl_rudder;
 struct servo servo_aileron_left, servo_aileron_right, servo_elevator, servo_rudder;

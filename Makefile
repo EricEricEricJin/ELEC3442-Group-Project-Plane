@@ -48,7 +48,8 @@ components/bmp280.c	 \
 components/esc.c	 \
 components/jy901.c	 \
 components/servo.c	 \
-support/shared_mem.c       
+support/shared_mem.c
+
 
 #######################################
 # binaries

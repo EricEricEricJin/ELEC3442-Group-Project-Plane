@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "pid.h"
+#include <math.h>
 
 static void abs_limit(float *a, float ABS_MAX)
 {

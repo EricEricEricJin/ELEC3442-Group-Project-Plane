@@ -7,7 +7,10 @@ uint32_t servo_deg_to_pw(servo_type_t type, float deg)
     case SERVO_180DEG:
         deg = deg > 90 ? 90 : (deg < -90 ? -90 : deg);
         return 1400 + 1000 * (deg / 90); // 400us to 2400us
+    default:
+        break;
     }
+    
     return 0;
 }
 

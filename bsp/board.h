@@ -32,8 +32,8 @@ typedef enum
     CURRENT_CH2 = 2,
 } current_sensing_ch_t;
 
-typedef int (*i2c_init_func)();
-typedef int (*i2c_routine_func)();
+typedef int (*i2c_init_func_t)();
+typedef int (*i2c_routine_func_t)();
 typedef struct board *board_t;
 
 struct board
@@ -41,8 +41,8 @@ struct board
     struct pca9685 dev_pca9685;
     struct ads7830 dev_ads7830;
 
-    i2c_init_func i2c_init_func_list[MAX_I2C_ROUTINE];
-    i2c_routine_func i2c_routine_func_list[MAX_I2C_ROUTINE];
+    i2c_init_func_t i2c_init_func_t_list[MAX_I2C_ROUTINE];
+    i2c_routine_func_t i2c_routine_func_t_list[MAX_I2C_ROUTINE];
 
     unsigned int i2c_period_list[MAX_I2C_ROUTINE]; // ms
     unsigned int i2c_update_time_list[MAX_I2C_ROUTINE];
@@ -61,7 +61,7 @@ int board_init();
 int board_start();
 void board_stop();
 
-int board_i2c_routine_register(i2c_init_func init_func, i2c_routine_func routine_func, unsigned int period_ms);
+int board_i2c_routine_register(i2c_init_func_t init_func, i2c_routine_func_t routine_func, unsigned int period_ms);
 board_t get_board();
 
 void board_pwm_set_freq(float freq_hz);

@@ -35,9 +35,9 @@ int *speedometer_routine()
 void sensor_init()
 {
     // register sensors
-    board_i2c_routine_register(imu_init, imu_routine, 20);
-    board_i2c_routine_register(bmp280_init, bmp280_routine, 50);
-    board_i2c_routine_register(speedometer_init, speedometer_routine, 50);
+    board_i2c_routine_register((i2c_init_func_t)imu_init, (i2c_routine_func_t)imu_routine, 20);
+    board_i2c_routine_register((i2c_init_func_t)bmp280_init, (i2c_routine_func_t)bmp280_routine, 50);
+    board_i2c_routine_register((i2c_init_func_t)speedometer_init, (i2c_routine_func_t)speedometer_routine, 50);
 }
 
 void sensor_task(void const *argument)
