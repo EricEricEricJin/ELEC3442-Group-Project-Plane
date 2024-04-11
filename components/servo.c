@@ -37,7 +37,7 @@ int servo_turn_on(servo_t comp)
 {
     if (comp->state == SERVO_ON)
         return -1;
-    if (board_pwm_set_pw(comp->pwm_channel, servo_deg_to_pwm(comp->type, comp->zero_deg)) != E_OK)
+    if (board_pwm_set_pw(comp->pwm_channel, servo_deg_to_pw(comp->type, comp->zero_deg)) != E_OK)
         return -1;
     comp->state = SERVO_ON;
     comp->degree = comp->zero_deg;

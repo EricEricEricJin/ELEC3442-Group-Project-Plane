@@ -16,15 +16,19 @@
 
 #include "plane_data.h"
 #include "ground_cmd.h"
+#include "communicate.h"
 
-pthread_t sensor_thread, plane_thread, comm_thread;
+pthread_t sensor_thread, plane_thread, comm_send_thread, comm_recv_thread;
 
 void task_init()
 {
     // start communication
+    communicate_task_init();
+    pthread_create(&comm_send_thread, NULL, (void*(*)(void*))&communicate_send_task, NULL);
+    pthread_create(&comm_recv_thread, NULL, (void*(*)(void*))&communicate_recv_task, NULL);
 
     // start plane task
-    pthread_create(plane_thread, NULL, plane_task, NULL);
+    pthread_create(&plane_thread, NULL, (void*(*)(void*))&plane_task, NULL);
 }
 
 void sys_init()
@@ -35,7 +39,6 @@ void sys_init()
 
     // sensor task init
     pthread_create(&sensor_thread, NULL, sensor_task, NULL);
-    // todo: add parameter
 }
 
 void hw_init()

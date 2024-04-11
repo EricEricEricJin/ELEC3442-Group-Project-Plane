@@ -20,7 +20,8 @@
 
 #include "stdint.h"
 
-typedef struct pid *pid_t;
+// typedef struct pid *pid_t;
+// Fuck Linux.. pid_t already defined in sys/types.h
 
 struct pid_param
 {

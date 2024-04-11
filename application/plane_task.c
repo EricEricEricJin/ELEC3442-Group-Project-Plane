@@ -50,7 +50,7 @@ const uint16_t PORT = 1234;
 
 struct ctrl_surface ctrl_aileron, ctrl_elevator, ctrl_rudder;
 struct servo servo_aileron_left, servo_aileron_right, servo_elevator, servo_rudder;
-struct esc_t engine_1, engine_2;
+struct esc engine_1, engine_2;
 
 void offline_task();
 
@@ -81,8 +81,8 @@ void plane_task(void const *argument)
     int comm_state;
     float aileron_out, elevator_out, rudder_out;
 
-    struct plane_data data;
-    struct ground_cmd cmd;
+    // struct plane_data data;
+    // struct ground_cmd cmd;
 
     while (1)
     {

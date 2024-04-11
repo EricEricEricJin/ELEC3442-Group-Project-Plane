@@ -53,7 +53,7 @@ int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data
 int communication_send(communication_t comm);
 int communication_recv(communication_t comm);
 
-// void communication_deinit(communication_t comm);
+int communication_deinit(communication_t comm);
 
 uint16_t crc16(uint16_t crc, const void *buf, size_t size);
 

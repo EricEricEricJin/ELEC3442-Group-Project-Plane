@@ -31,12 +31,24 @@ BUILD_DIR = build
 ######################################
 # C sources
 C_SOURCES =		  	 \
-algorithms/**/*.c    \
-application/**/*.c   \
-bsp/**/*.c 			 \
-communication/**/*.c \
-components/**/*.c	 \
-main.c
+main.c				 \
+algorithms/pid.c     \
+application/communicate.c   \
+application/ctrl_surface.c   \
+application/init.c   \
+application/plane_task.c   \
+application/sensor_task.c   \
+bsp/ads7830.c 			 \
+bsp/pca9685.c 			 \
+bsp/pisystem.c 			 \
+bsp/board.c 			 \
+communication/communication.c \
+communication/crc16.c \
+components/bmp280.c	 \
+components/esc.c	 \
+components/jy901.c	 \
+components/servo.c	 \
+support/shared_mem.c       
 
 #######################################
 # binaries
@@ -54,7 +66,8 @@ C_INCLUDES =    \
 -Icommunication \
 -Icomponents	\
 -Icomponents/bmp280 \
--Icomponents/imu
+-Icomponents/imu    \
+-Isupport
 
 C_DEFS = -DRASPBERRYPI
 
@@ -70,17 +83,17 @@ LIBS = -lwiringPi -lpthread
 LIBDIR = 
 LDFLAGS = $(LIBDIR) $(LIBS)
 
-.PHONY: all create_build \
-	 	build_bsp build_components \
-		build_communication build_algorithms \
-		build_application
+# .PHONY: all create_build \
+# 	 	build_bsp build_components \
+# 		build_communication build_algorithms \
+# 		build_application
 
-all: create_build build_bsp build_components \
-	 build_communication build_algorithms \
-	 build_application build/main
+# all: create_build build_bsp build_components \
+# 	 build_communication build_algorithms \
+# 	 build_application build/main
 
-create_build:
-	if ! [ -d build ]; then mkdir build; fi;
+# create_build:
+# 	if ! [ -d build ]; then mkdir build; fi;
 
 INCLUDE_FLAGS = -I bsp/
 LINK_LIBS = -lwiringPi
@@ -113,7 +126,7 @@ vpath %.c $(sort $(dir $(C_SOURCES)))
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	$(CC) -c $(CFLAGS) $< -o $@
 
-$(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
+$(BUILD_DIR)/$(TARGET): $(OBJECTS) Makefile
 	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 	
 $(BUILD_DIR):
