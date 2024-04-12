@@ -61,6 +61,6 @@ int esc_set_thrust(esc_t comp, float thrust)
     return 0;
 }
 
-float esc_get_current(esc_t comp) { return board_adc_get_current(comp->current_ch); }
+float esc_get_current(esc_t comp) { return 0 /*TODO: use ext. sensor*/; }
 int esc_get_state(esc_t comp) {return comp->state; }
 float esc_get_thrust(esc_t comp) { return comp->thrust; }

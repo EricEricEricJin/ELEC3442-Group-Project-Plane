@@ -41,7 +41,7 @@ void sys_init()
     shared_mem_create(DATA_MSG_ID, sizeof(struct plane_data));
 
     // sensor task init
-    pthread_create(&sensor_thread, NULL,  (void*(*)(void*))&sensor_task, NULL);
+    // pthread_create(&sensor_thread, NULL,  (void*(*)(void*))&sensor_task, NULL);
 }
 
 void hw_init()

@@ -43,6 +43,7 @@ int communication_send(communication_t comm)
     printf("fd = %d\n", comm->fd);
     // append checksum
     comm->data->crc16 = crc16(comm->crc_value, (const void *)(comm->data), sizeof(struct plane_data) - sizeof(uint16_t));
+    printf("CRC = %x\n", comm->data->crc16);
     // send to server
     int ret = sendto(comm->fd, (void *)(comm->data), sizeof(*comm->data), 0, (struct sockaddr *)(&comm->server_addr), sizeof(comm->server_addr));
     printf("communication ret = %d \n", ret);
@@ -163,6 +164,7 @@ int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data
     comm->period_us = send_period_us;
 
     printf("communication inited!\n");
+    comm->crc_value = crc_value;
 
     return 0;
 }

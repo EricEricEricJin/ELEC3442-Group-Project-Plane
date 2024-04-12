@@ -116,17 +116,17 @@ void plane_task(void const *argument)
         // update elevator
         ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_elevator);
         ctrl_surface_set_input(&ctrl_elevator, cmd.elevator);
-        ctrl_surface_set_feedback(&ctrl_elevator, data.angle_y, data.omega_y);
+        ctrl_surface_set_feedback(&ctrl_elevator, data.pitch, data.w_y);
 
         // update aileron
         ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_aileron);
         ctrl_surface_set_input(&ctrl_aileron, cmd.aileron);
-        ctrl_surface_set_feedback(&ctrl_aileron, data.angle_x, data.omega_x);
+        ctrl_surface_set_feedback(&ctrl_aileron, data.roll, data.w_x);
 
         // update rudder
         ctrl_surface_set_mode(&ctrl_rudder, cmd.opmode_rudder);
         ctrl_surface_set_input(&ctrl_rudder, cmd.rudder);
-        ctrl_surface_set_feedback(&ctrl_rudder, data.angle_z, data.omega_z);
+        ctrl_surface_set_feedback(&ctrl_rudder, data.yaw, data.w_z);
         // Currently use imu heading, change to magnetic heading later
 
         // Calculate outputs
