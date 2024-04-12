@@ -51,5 +51,6 @@ struct jy901
 int jy901_init(jy901_t dev, uint16_t i2c_addr, uint16_t orient, uint16_t axis6);
 int jy901_restart(jy901_t dev);
 int jy901_update(jy901_t dev);
+int jy901_decode(jy901_data_raw_t raw, jy901_data_decoded_t decoded);
 
 #endif
