@@ -34,7 +34,7 @@ float ctrl_surface_calculate(ctrl_surface_t ctrl_surface)
         break;
     }
 
-    printf("ctrl_surface calculate");
+    // printf("ctrl_surface calculate");
 
     return output;
 }

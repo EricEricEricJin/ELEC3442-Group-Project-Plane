@@ -70,8 +70,8 @@ void plane_task(void const *argument)
     servo_init(&servo_rudder, SERVO_180DEG, 3, 0, 45, -45);
 
     // Initialize engines
-    esc_init(&engine_1, 15, CURRENT_CH1, 1000, 2000);
-    esc_init(&engine_2, 16, CURRENT_CH2, 1000, 2000);
+    esc_init(&engine_1, 14, CURRENT_CH1, 1000, 2000);
+    esc_init(&engine_2, 15, CURRENT_CH2, 1000, 2000);
 
     // // Initialize communication
     // communication_init(&comm, &cmd, &data, IP, PORT, 0xffff);
@@ -90,20 +90,22 @@ void plane_task(void const *argument)
         shared_mem_get(CMD_MSG_ID, (void*)&cmd);
         shared_mem_get(DATA_MSG_ID, (void*)&data);
 
-        // consider as plane offlined if command error or time out
-        if (board_get_millis() - cmd.update_time_ms > CMD_MAX_DELAY_MS)
-        {
-            offline_task();
-            goto task_loop_end;
-        }
+        // printf("t1 = %d\tt2 = %d\n", cmd.thrust_1, cmd.thrust_2);
 
-        // force to manual mode if cannot get sensor data
-        if (board_get_millis() - data.update_time_ms > DATA_MAX_DELAY_MS)
-        {
-            cmd.opmode_elevator = OPMODE_MANUAL;
-            cmd.opmode_aileron = OPMODE_MANUAL;
-            cmd.opmode_rudder = OPMODE_MANUAL;
-        }
+        // consider as plane offlined if command error or time out
+        // if (board_get_millis() - cmd.update_time_ms > CMD_MAX_DELAY_MS)
+        // {
+        //     offline_task();
+        //     goto task_loop_end;
+        // }
+
+        // // force to manual mode if cannot get sensor data
+        // if (board_get_millis() - data.update_time_ms > DATA_MAX_DELAY_MS)
+        // {
+        //     cmd.opmode_elevator = OPMODE_MANUAL;
+        //     cmd.opmode_aileron = OPMODE_MANUAL;
+        //     cmd.opmode_rudder = OPMODE_MANUAL;
+        // }
 
         offline = 0;
 
@@ -141,15 +143,19 @@ void plane_task(void const *argument)
         servo_set_deg_trimmed(&servo_rudder, rudder_out * 45.0f);
 
         // Set engines
-        if (cmd.eng_1)
-            esc_start(&engine_1);
-        else
-            esc_stop(&engine_1);
-        if (cmd.eng_2)
-            esc_start(&engine_2);
-        else
-            esc_stop(&engine_2);
+        // if (cmd.eng_1)
+        //     esc_start(&engine_1);
+        // else
+        //     esc_stop(&engine_1);
+        // if (cmd.eng_2)
+        //     esc_start(&engine_2);
+        // else
+        //     esc_stop(&engine_2);
+        
+        esc_start(&engine_1);
+        esc_start(&engine_2);
 
+        // printf("eng1=%d:%f\teng2=%d:%f\t\n", cmd.eng_1, (float)(cmd.thrust_1) / UINT16_MAX, cmd.eng_2, (float)(cmd.thrust_2) / UINT16_MAX);
         esc_set_thrust(&engine_1, (float)(cmd.thrust_1) / UINT16_MAX);
         esc_set_thrust(&engine_2, (float)(cmd.thrust_2) / UINT16_MAX);
 

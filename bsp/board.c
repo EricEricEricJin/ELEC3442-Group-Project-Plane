@@ -39,8 +39,8 @@ int board_init()
     memset(&theboard, 0, sizeof(struct board));
 
     // register on-board chips
-    board_i2c_routine_register(bd_pca9685_init, bd_pca9685_routine, 5);
-    board_i2c_routine_register(bd_ads7830_init, bd_ads7830_routine, 50);
+    board_i2c_routine_register(&bd_pca9685_init, &bd_pca9685_routine, 5);
+    board_i2c_routine_register(&bd_ads7830_init, &bd_ads7830_routine, 50);
 
     return E_OK;
 }
@@ -99,7 +99,11 @@ board_t get_board() { return &theboard; }
 // PWM functions
 void board_pwm_set_freq(float freq_hz) { pwm_frequency = freq_hz; }
 int board_pwm_set_value(int channel, uint16_t value) { return pca9685_set_value(&theboard.dev_pca9685, channel, value); }
-int board_pwm_set_pw(int channel, uint32_t pw_us) { return pca9685_set_pw(&theboard.dev_pca9685, channel, pw_us); }
+int board_pwm_set_pw(int channel, uint32_t pw_us) 
+{
+    // printf("Board set pw!\n"); 
+    return pca9685_set_pw(&theboard.dev_pca9685, channel, pw_us); 
+}
 
 // ADC functions
 float board_adc_get_vbus() { return ads7830_get_volt(&theboard.dev_ads7830, ADC_VBUS_CH) * ADC_VBUS_GAIN; }

@@ -20,7 +20,7 @@ int esc_init(esc_t comp, int pwm_channel, current_sensing_ch_t current_ch,
 }
 
 int esc_start(esc_t comp) {
-    if (comp->state == ESC_RUNNING || comp->thrust != 0)
+    if (comp->state == ESC_RUNNING || comp->thrust > 0.05)
         return -1;
     if (board_pwm_set_pw(comp->pwm_channel, comp->zero_pw_us) != E_OK)
         return -1;
@@ -55,6 +55,7 @@ int esc_set_thrust(esc_t comp, float thrust)
         return -1;
 
     uint32_t pw = thrust * (comp->full_pw_us - comp->zero_pw_us) + comp->zero_pw_us;
+    printf("esc set pw = %d\n", pw);
     if (board_pwm_set_pw(comp->pwm_channel, pw) != E_OK)
         return -1;
     comp->thrust = thrust;

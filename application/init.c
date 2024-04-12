@@ -46,8 +46,12 @@ void sys_init()
 
 void hw_init()
 {
+    int ret;
     printf("HW init...\n");
-    board_init();
-    sensor_init();
-    board_start();
+    ret = board_init();
+    printf("board init = %d\n", ret);
+    board_pwm_set_freq(200);
+    // sensor_init();
+    ret = board_start();
+    printf("board start = %d\n", ret);
 }

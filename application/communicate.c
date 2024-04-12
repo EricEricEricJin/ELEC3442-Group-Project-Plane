@@ -28,7 +28,7 @@ void communicate_send_task(void const *argument)
         shared_mem_get(DATA_MSG_ID, ct_comm.data);
         
         // for test only
-        ct_comm.data->a_x = 1234;
+        // ct_comm.data->a_x = 1234;
 
         communication_send(&ct_comm);
         usleep(ct_comm.period_us);

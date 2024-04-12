@@ -80,6 +80,7 @@ int pca9685_set_value(pca9685_t dev, int channel, uint16_t value)
 
 int pca9685_set_pw(pca9685_t dev, int channel, uint32_t pw_us)
 {
+    // printf("PCA set ch %d = %d\n", channel, pw_us);
     if (INVALID_DEV(dev) || PWM_INVALID_CH(channel))
         return -1;
 
