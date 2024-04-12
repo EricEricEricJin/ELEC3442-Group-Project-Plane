@@ -24,11 +24,11 @@ enum
 
 struct __attribute__((__packed__)) ground_cmd
 {
-    int eng_1 : 1;
-    int eng_2 : 1;
-    int opmode_elevator : 2;
-    int opmode_aileron : 2;
     int opmode_rudder : 2;
+    int opmode_aileron : 2;
+    int opmode_elevator : 2;
+    int eng_2 : 1;
+    int eng_1 : 1;
 
     int16_t elevator;
     int16_t aileron;

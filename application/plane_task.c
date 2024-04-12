@@ -143,18 +143,15 @@ void plane_task(void const *argument)
         servo_set_deg_trimmed(&servo_rudder, rudder_out * 45.0f);
 
         // Set engines
-        // if (cmd.eng_1)
-        //     esc_start(&engine_1);
-        // else
-        //     esc_stop(&engine_1);
-        // if (cmd.eng_2)
-        //     esc_start(&engine_2);
-        // else
-        //     esc_stop(&engine_2);
+        if (cmd.eng_1)
+            esc_start(&engine_1);
+        else
+            esc_stop(&engine_1);
+        if (cmd.eng_2)
+            esc_start(&engine_2);
+        else
+            esc_stop(&engine_2);
         
-        esc_start(&engine_1);
-        esc_start(&engine_2);
-
         // printf("eng1=%d:%f\teng2=%d:%f\t\n", cmd.eng_1, (float)(cmd.thrust_1) / UINT16_MAX, cmd.eng_2, (float)(cmd.thrust_2) / UINT16_MAX);
         esc_set_thrust(&engine_1, (float)(cmd.thrust_1) / UINT16_MAX);
         esc_set_thrust(&engine_2, (float)(cmd.thrust_2) / UINT16_MAX);
