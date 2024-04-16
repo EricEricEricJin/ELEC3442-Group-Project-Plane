@@ -20,26 +20,57 @@
 
 #define TASK_CYCLE_PERIOD 5
 
-struct pid_param aileron_param =
-    {
-        .p = 1.0f,
-        .i = 0.1f,
-        .max_out = 1.0f,
-        .integral_limit = 0.1f};
+#define PITCH_MAX_DEGPMS (0.03f)
+#define ROLL_MAX_DEGPMS (0.03f)
+#define YAW_MAX_DEGPMS (0.03f)
 
-struct pid_param rudder_param =
-    {
-        .p = 1.0f,
-        .i = 0.1f,
-        .max_out = 1.0f,
-        .integral_limit = 0.1f};
+struct pid_param aileron_inter_param =
+{
+    .p = 1.0f,
+    .i = 0.1f,
+    .max_out = 1.0f,
+    .integral_limit = 0.1f
+};
 
-struct pid_param elevator_param =
-    {
-        .p = 1.0f,
-        .i = 0.1f,
-        .max_out = 1.0f,
-        .integral_limit = 0.1f};
+struct pid_param aileron_outer_param =
+{
+    .p = 1.0f,
+    .i = 0.1f,
+    .max_out = 1.0f,
+    .integral_limit = 0.1f
+};
+
+struct pid_param rudder_inter_param =
+{
+    .p = 1.0f,
+    .i = 0.1f,
+    .max_out = 1.0f,
+    .integral_limit = 0.1f
+};
+
+struct pid_param rudder_outer_param =
+{
+    .p = 1.0f,
+    .i = 0.1f,
+    .max_out = 1.0f,
+    .integral_limit = 0.1f
+};
+
+struct pid_param elevator_inter_param =
+{
+    .p = 1.0f,
+    .i = 0.1f,
+    .max_out = 1.0f,
+    .integral_limit = 0.1f
+};
+
+struct pid_param elevator_outer_param =
+{
+    .p = 1.0f,
+    .i = 0.1f,
+    .max_out = 1.0f,
+    .integral_limit = 0.1f
+};
 
 struct communication comm;
 struct ground_cmd cmd;
@@ -59,9 +90,9 @@ int offline = 0;
 void plane_task(void const *argument)
 {
     // Initialize controllers
-    ctrl_surface_init(&ctrl_aileron, aileron_param);
-    ctrl_surface_init(&ctrl_elevator, elevator_param);
-    ctrl_surface_init(&ctrl_rudder, rudder_param);
+    ctrl_surface_init(&ctrl_aileron, aileron_inter_param, aileron_outer_param);
+    ctrl_surface_init(&ctrl_elevator, elevator_inter_param, elevator_outer_param);
+    ctrl_surface_init(&ctrl_rudder, rudder_inter_param, rudder_outer_param);
 
     // Initialize servos
     servo_init(&servo_aileron_left, SERVO_180DEG, 1, 0, 45, -45);
@@ -83,6 +114,8 @@ void plane_task(void const *argument)
 
     // struct plane_data data;
     // struct ground_cmd cmd;
+
+    float locked_pitch, locked_roll, locked_yaw;
 
     while (1)
     {
@@ -117,19 +150,45 @@ void plane_task(void const *argument)
 
         // update elevator
         ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_elevator);
-        ctrl_surface_set_input(&ctrl_elevator, cmd.elevator / 32768.0f);
         ctrl_surface_set_feedback(&ctrl_elevator, data.pitch, data.w_y);
+        if (cmd.opmode_elevator == CTRL_SURFACE_MODE_LOCK_ATT)
+        {
+            locked_pitch += cmd.elevator / 32768.0f * (PITCH_MAX_DEGPMS * TASK_CYCLE_PERIOD);
+            ctrl_surface_set_input(&ctrl_elevator, locked_pitch);
+        }
+        else
+        {
+            locked_pitch = data.pitch;
+            ctrl_surface_set_input(&ctrl_elevator, cmd.elevator / 32768.0f);
+        }
 
         // update aileron
         ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_aileron);
-        ctrl_surface_set_input(&ctrl_aileron, cmd.aileron / 32768.0f);
         ctrl_surface_set_feedback(&ctrl_aileron, data.roll, data.w_x);
+        if (cmd.opmode_aileron == CTRL_SURFACE_MODE_LOCK_ATT)
+        {
+            locked_roll += cmd.aileron / 32768.0f * (ROLL_MAX_DEGPMS * TASK_CYCLE_PERIOD);
+            ctrl_surface_set_input(&ctrl_aileron, locked_roll);
+        }
+        else 
+        {
+            locked_roll = data.roll;
+            ctrl_surface_set_input(&ctrl_aileron, cmd.aileron / 32768.0f);
+        }
 
         // update rudder
         ctrl_surface_set_mode(&ctrl_rudder, cmd.opmode_rudder);
-        ctrl_surface_set_input(&ctrl_rudder, cmd.rudder / 32768.0f);
         ctrl_surface_set_feedback(&ctrl_rudder, data.yaw, data.w_z);
-        // Currently use imu heading, change to magnetic heading later
+        if (cmd.opmode_rudder == CTRL_SURFACE_MODE_LOCK_ATT)
+        {
+            locked_yaw += cmd.rudder / 32768.0f * (YAW_MAX_DEGPMS * TASK_CYCLE_PERIOD);
+            ctrl_surface_set_input(&ctrl_rudder, locked_yaw);
+        }
+        else 
+        {
+            locked_yaw = data.yaw;
+            ctrl_surface_set_input(&ctrl_rudder, cmd.rudder / 32768.0f);
+        }
 
         // Calculate outputs
         aileron_out = ctrl_surface_calculate(&ctrl_aileron);
