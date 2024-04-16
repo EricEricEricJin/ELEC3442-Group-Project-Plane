@@ -24,7 +24,7 @@ struct __attribute__((__packed__)) plane_data
     uint16_t air_spd;
 
     uint8_t volt_bat, volt_bus, volt_aux;
-    uint16_t altitude;
+    uint16_t altitude, temperature;
     uint32_t update_time_ms;
     uint16_t crc16;
 };

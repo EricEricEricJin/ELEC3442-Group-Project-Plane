@@ -8,29 +8,39 @@
 #include "sensor_task.h"
 #include "board.h"
 
-#include "jy901.h"
 #include "shared_mem.h"
-#include "plane_data.h"
 #include "msg_id.h"
 
+#include "plane_data.h"
+#include "ground_cmd.h"
+
+#include "jy901.h"
+#include "bmp280.h"
+
+#define JY901_ADDR (0x50)
+#define BMP280_ADDR (0x76)
+
 struct jy901 imu;
+struct bmp280 bmp;
 
 int imu_init()
 {
-    return jy901_init(&imu, 0x50, 0, 0);
+    return jy901_init(&imu, JY901_ADDR, 0, 0);
 }
 
 int imu_routine()
 {
-    jy901_update(&imu);
+    return jy901_update(&imu);
 }
 
 int bmp_init()
 {
+    return bmp280_init(&bmp, BMP280_ADDR);
 }
 
 int bmp_routine()
 {
+    return bmp280_update(&bmp);
 }
 
 int speedometer_init()
@@ -39,6 +49,12 @@ int speedometer_init()
 
 int speedometer_routine()
 {
+}
+
+float bar_altitude_meter(float seaLevelhPa, float pressure)
+{
+    // https://github.com/adafruit/Adafruit_BMP280_Library/blob/master/Adafruit_BMP280.cpp
+    return 44330 * (1.0 - pow(pressure / seaLevelhPa, 0.1903));
 }
 
 void sensor_init()
@@ -52,6 +68,7 @@ void sensor_init()
 void sensor_task(void const *argument)
 {
     struct plane_data data;
+    struct ground_cmd cmd;
     while (1)
     {
         // Update board data
@@ -77,7 +94,10 @@ void sensor_task(void const *argument)
         data.pitch = imu.raw_data.pitch;
         data.yaw = imu.raw_data.yaw;
 
-        // Update BMP data, todo
+        // Update BMP data
+        shared_mem_get(CMD_MSG_ID, &cmd);
+        data.altitude = bar_altitude_meter(cmd.QNH_mPa / 1000.0f, bmp.data.pressure);
+        data.temperature = bmp.data.temperature;
 
         shared_mem_update(DATA_MSG_ID, &data);
         board_delay_ms(10);

@@ -25,13 +25,13 @@ struct ctrl_surface
 {
     int mode;
 
-    struct pid pid;
+    struct pid inter_pid, outer_pid;
 
-    float input;
+    float input;    // is sidestick input for STA or OFF, and is target angle for ATT
     float pos_feedback, spd_feedback;
 };
 
-void ctrl_surface_init(ctrl_surface_t ctrl_surface, struct pid_param pid_param);
+void ctrl_surface_init(ctrl_surface_t ctrl_surface, struct pid_param inter_param, struct pid_param outer_param);
 
 float ctrl_surface_calculate(ctrl_surface_t ctrl_surface);
 

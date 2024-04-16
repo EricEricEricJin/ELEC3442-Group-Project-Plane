@@ -41,6 +41,8 @@ struct __attribute__((__packed__)) ground_cmd
     int16_t trim_aileron;
     int16_t trim_rudder;
 
+    uint32_t QNH_mPa; 
+
     uint32_t update_time_ms;
     uint16_t crc16;
 };
