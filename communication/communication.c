@@ -112,9 +112,10 @@ int communication_recv(communication_t comm) // is blocking!
     // receive from server
     ret = recvfrom(comm->fd, (void *)(comm->cmd), sizeof(*comm->cmd), MSG_WAITALL, (struct sockaddr *)&comm->server_addr, &seraddrlen);
     printf("communication ret = %d \n", ret);
-    if (ret != sizeof(comm->cmd))
+    if (ret != sizeof(struct ground_cmd))
     {
         // receive error
+        printf("Receive size error!\n");
         comm->state |= COMM_RECV_ERROR;
         return -1;
     }
@@ -124,6 +125,7 @@ int communication_recv(communication_t comm) // is blocking!
         if (crc_calc != comm->cmd->crc16)
         {
             // received data incorrect
+            printf("Receive CRC error!\n");
             comm->state |= COMM_RECV_ERROR;
             return -1;
         }

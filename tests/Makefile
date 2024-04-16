@@ -12,3 +12,6 @@ communication_test: communication_test.c ../communication/* ../bsp/*
 
 engine_test: engine_test.c ../bsp/*
 	gcc -O3 $^ -I ../bsp/ -lwiringPi -o $@
+
+bmp280_test: bmp280_test.c ../bsp/* ../components/bmp280.*
+	gcc $^ -I ../bsp/ -I ../components/ -lwiringPi -o $@

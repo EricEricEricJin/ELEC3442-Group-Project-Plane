@@ -64,9 +64,9 @@ void plane_task(void const *argument)
     ctrl_surface_init(&ctrl_rudder, rudder_param);
 
     // Initialize servos
-    servo_init(&servo_aileron_left, SERVO_180DEG, 0, 0, 45, -45);
-    servo_init(&servo_aileron_right, SERVO_180DEG, 1, 0, -45, 45);
-    servo_init(&servo_elevator, SERVO_180DEG, 2, 0, 45, -45);
+    servo_init(&servo_aileron_left, SERVO_180DEG, 1, 0, 45, -45);
+    servo_init(&servo_aileron_right, SERVO_180DEG, 0, 0, -45, 45);
+    servo_init(&servo_elevator, SERVO_180DEG, 4, 0, 45, -45);
     servo_init(&servo_rudder, SERVO_180DEG, 3, 0, 45, -45);
 
     // Initialize engines
@@ -117,17 +117,17 @@ void plane_task(void const *argument)
 
         // update elevator
         ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_elevator);
-        ctrl_surface_set_input(&ctrl_elevator, cmd.elevator);
+        ctrl_surface_set_input(&ctrl_elevator, cmd.elevator / 32768.0f);
         ctrl_surface_set_feedback(&ctrl_elevator, data.pitch, data.w_y);
 
         // update aileron
         ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_aileron);
-        ctrl_surface_set_input(&ctrl_aileron, cmd.aileron);
+        ctrl_surface_set_input(&ctrl_aileron, cmd.aileron / 32768.0f);
         ctrl_surface_set_feedback(&ctrl_aileron, data.roll, data.w_x);
 
         // update rudder
         ctrl_surface_set_mode(&ctrl_rudder, cmd.opmode_rudder);
-        ctrl_surface_set_input(&ctrl_rudder, cmd.rudder);
+        ctrl_surface_set_input(&ctrl_rudder, cmd.rudder / 32768.0f);
         ctrl_surface_set_feedback(&ctrl_rudder, data.yaw, data.w_z);
         // Currently use imu heading, change to magnetic heading later
 

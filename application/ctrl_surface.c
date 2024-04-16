@@ -30,7 +30,7 @@ float ctrl_surface_calculate(ctrl_surface_t ctrl_surface)
         break;
 
     default: // OFF
-        output = ctrl_surface->input;
+        output = ctrl_surface->input / 2;
         break;
     }
 
