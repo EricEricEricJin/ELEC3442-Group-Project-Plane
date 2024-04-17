@@ -5,6 +5,8 @@
  * of this program, and changing it is allowed as long as the name is changed.
  *****************************************************************************/
 
+#include <math.h>
+
 #include "sensor_task.h"
 #include "board.h"
 
@@ -45,10 +47,12 @@ int bmp_routine()
 
 int speedometer_init()
 {
+    return 0;
 }
 
 int speedometer_routine()
 {
+    return 0;
 }
 
 float bar_altitude_meter(float seaLevelhPa, float pressure)
@@ -93,6 +97,8 @@ void sensor_task(void const *argument)
         data.roll = imu.raw_data.roll;
         data.pitch = imu.raw_data.pitch;
         data.yaw = imu.raw_data.yaw;
+
+        printf("sensor task: %x %x\n", data.roll, data.pitch);
 
         // Update BMP data
         shared_mem_get(CMD_MSG_ID, &cmd);

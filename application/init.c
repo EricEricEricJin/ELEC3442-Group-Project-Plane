@@ -41,7 +41,7 @@ void sys_init()
     shared_mem_create(DATA_MSG_ID, sizeof(struct plane_data));
 
     // sensor task init
-    // pthread_create(&sensor_thread, NULL,  (void*(*)(void*))&sensor_task, NULL);
+    pthread_create(&sensor_thread, NULL,  (void*(*)(void*))&sensor_task, NULL);
 }
 
 void hw_init()
@@ -51,7 +51,7 @@ void hw_init()
     ret = board_init();
     printf("board init = %d\n", ret);
     board_pwm_set_freq(200);
-    // sensor_init();
+    sensor_init();
     ret = board_start();
     printf("board start = %d\n", ret);
 }

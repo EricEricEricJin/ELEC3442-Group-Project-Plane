@@ -23,6 +23,8 @@ int jy901_init(jy901_t dev, uint16_t i2c_addr, uint16_t orient, uint16_t axis6)
     dev->fd = wiringPiI2CSetup(dev->i2c_addr);
     if (dev->fd < 0)
         return -1;
+    
+    printf("IMU init!\n");
     return jy901_restart(dev);
 }
 
@@ -41,6 +43,9 @@ int jy901_update(jy901_t dev)
     dev->raw_data.roll = wiringPiI2CReadReg16(dev->fd, 0x3d);
     dev->raw_data.pitch = wiringPiI2CReadReg16(dev->fd, 0x3e);
     dev->raw_data.yaw = wiringPiI2CReadReg16(dev->fd, 0x3f);
+    
+    printf("IMU update!\n");
+    return 0;
 }
 
 int jy901_decode(jy901_data_raw_t raw, jy901_data_decoded_t decoded)

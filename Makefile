@@ -80,7 +80,7 @@ endif
 #######################################
 # LDFLAGS
 #######################################
-LIBS = -lwiringPi -lpthread
+LIBS = -lwiringPi -lpthread -lm
 LIBDIR = 
 LDFLAGS = $(LIBDIR) $(LIBS)
 
