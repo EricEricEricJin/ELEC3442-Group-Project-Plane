@@ -102,6 +102,7 @@ int bmp280_update(bmp280_t dev)
     // Avoid exception caused by division by zero
     if (0 == p1)
     {
+        // printf("bmp div by 0 err!\n");
         dev->data.pressure = 0.0f;
     }
     else 
@@ -113,7 +114,7 @@ int bmp280_update(bmp280_t dev)
         p = ((p + p1 + p2) >> 8) + (((int64_t)dev->cal.cal_p7) << 4);
         dev->data.pressure = p / 256.0f;
     }
-    
+    // printf("BMP update! %f\n", dev->data.pressure);
     return 0;
 }
 

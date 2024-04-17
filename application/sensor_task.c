@@ -19,6 +19,8 @@
 #include "jy901.h"
 #include "bmp280.h"
 
+#define SENSOR_TASK_CYCLE (10)
+
 #define JY901_ADDR (0x50)
 #define BMP280_ADDR (0x76)
 
@@ -98,14 +100,18 @@ void sensor_task(void const *argument)
         data.pitch = imu.raw_data.pitch;
         data.yaw = imu.raw_data.yaw;
 
-        printf("sensor task: %x %x\n", data.roll, data.pitch);
 
         // Update BMP data
         shared_mem_get(CMD_MSG_ID, &cmd);
-        data.altitude = bar_altitude_meter(cmd.QNH_mPa / 1000.0f, bmp.data.pressure);
+        
+        // for test only
+        cmd.QNH_mPa = 1013.0f * 1e5;
+
+        data.altitude = (uint16_t)(bar_altitude_meter(cmd.QNH_mPa / 1000.0f, bmp.data.pressure) * 10);
         data.temperature = bmp.data.temperature;
+        printf("sensor task: %d \n", data.altitude);
 
         shared_mem_update(DATA_MSG_ID, &data);
-        board_delay_ms(10);
+        board_delay_ms(SENSOR_TASK_CYCLE);
     }
 }
