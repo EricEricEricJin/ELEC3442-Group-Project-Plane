@@ -1,4 +1,4 @@
 **/build/**
 **/build/
 application/appcfg.h
-main
+nohup.out
