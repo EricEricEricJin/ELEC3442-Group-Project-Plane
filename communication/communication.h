@@ -46,10 +46,6 @@ struct communication
 
 int communication_init(communication_t comm, ground_cmd_t cmd, plane_data_t data,
                        uint16_t my_port, const char *server_ip, uint16_t server_port, uint16_t crc_value, unsigned int send_period_us);
-// void communication_set_send_rate(communication_t comm, unsigned int send_period_us);
-// int communication_start(communication_t comm);
-// int communication_get_state(communication_t comm);
-// int communication_stop(communication_t comm);
 int communication_send(communication_t comm);
 int communication_recv(communication_t comm);
 

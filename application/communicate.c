@@ -6,9 +6,7 @@
 #include "plane_data.h"
 #include "ground_cmd.h"
 
-const char* SERVER_IP = "154.221.20.43";
-const uint16_t SERVER_PORT = 1234;
-const uint16_t MY_PORT = 1235;
+#include "appcfg.h"
 
 struct communication ct_comm;
 struct plane_data ct_data;

@@ -1,3 +1,4 @@
 **/build/**
 **/build/
+application/appcfg.h
 main
