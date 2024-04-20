@@ -46,3 +46,13 @@ void communicate_recv_task(void const *argument)
         printf("communicate recv t1=%d t2=%d \n", ct_comm.cmd->thrust_1, ct_comm.cmd->thrust_2);
     }
 }
+
+int communicate_video_start()
+{
+    return communication_video_start(VIDEO_W, VIDEO_H, VIDEO_FR, VIDEO_BR, SERVER_IP, VIDEO_PORT);
+}
+
+int communicate_video_stop()
+{
+    return communication_video_stop();
+}

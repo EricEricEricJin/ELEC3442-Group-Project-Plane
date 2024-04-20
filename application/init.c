@@ -26,6 +26,7 @@ void task_init()
     printf("Task init...\n");
     // start communication
     communicate_task_init();
+    communicate_video_start();
     pthread_create(&comm_send_thread, NULL, (void*(*)(void*))&communicate_send_task, NULL);
     pthread_create(&comm_recv_thread, NULL, (void*(*)(void*))&communicate_recv_task, NULL);
 

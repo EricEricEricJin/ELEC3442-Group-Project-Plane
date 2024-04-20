@@ -113,3 +113,17 @@ int communication_deinit(communication_t comm)
         return -1;
     return 0;
 }
+
+int communication_video_start(int width, int height, int framerate, int bitrate, const char* ip, int port)
+{
+    char cmd[130];
+    sprintf(cmd, "rpicam-vid -t 0 --width %d --height %d --framerate %d -b %d --inline -o udp://%s:%d > /dev/null 2>&1 &",
+            width, height, framerate, bitrate, ip, port);
+    printf("%s\n", cmd);
+    return system(cmd);
+}
+
+int communication_video_stop()
+{
+    return system("pkill rpicam-vid");
+}

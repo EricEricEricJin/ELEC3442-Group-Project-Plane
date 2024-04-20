@@ -51,6 +51,9 @@ int communication_recv(communication_t comm);
 
 int communication_deinit(communication_t comm);
 
+int communication_video_start(int width, int height, int framerate, int bitrate, const char* ip, int port);
+int communication_video_stop();
+
 uint16_t crc16(uint16_t crc, const void *buf, size_t size);
 
 #endif
