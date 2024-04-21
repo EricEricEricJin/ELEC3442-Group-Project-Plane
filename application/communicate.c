@@ -14,7 +14,7 @@ struct ground_cmd ct_cmd;
 
 void communicate_task_init()
 {
-    int ret = communication_init(&ct_comm, &ct_cmd, &ct_data, MY_PORT, SERVER_IP, SERVER_PORT, 0xffff, 500000);
+    int ret = communication_init(&ct_comm, &ct_cmd, &ct_data, MY_PORT, SERVER_IP, SERVER_PORT, 0xffff, 100000);
     printf("communicate task init = ret\n");
 }
 

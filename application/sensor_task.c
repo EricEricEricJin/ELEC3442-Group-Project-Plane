@@ -16,8 +16,11 @@
 #include "plane_data.h"
 #include "ground_cmd.h"
 
+#include "log.h"
+
 #include "jy901.h"
 #include "bmp280.h"
+
 
 #define SENSOR_TASK_CYCLE (10)
 
@@ -44,6 +47,7 @@ int bmp_init()
 
 int bmp_routine()
 {
+    log_i("bmp update!");
     return bmp280_update(&bmp);
 }
 
@@ -102,15 +106,10 @@ void sensor_task(void const *argument)
 
 
         // Update BMP data
-        shared_mem_get(CMD_MSG_ID, &cmd);
-        
-        // for test only
-        cmd.QNH_mPa = 1013.0f * 1e5;
-
-        data.altitude = (uint16_t)(bar_altitude_meter(cmd.QNH_mPa / 1000.0f, bmp.data.pressure) * 10);
-        data.temperature = bmp.data.temperature;
-        printf("sensor task: %d \n", data.altitude);
-
+        log_i("raw %f, %f", bmp.data.pressure, bmp.data.temperature);
+        data.pressure = (uint16_t)(bmp.data.pressure / 2.0f);
+        data.temperature = (int16_t)(bmp.data.temperature * 100.0f);
+        log_i("psr = %x, tmp = %x\n", data.pressure, data.temperature);
         shared_mem_update(DATA_MSG_ID, &data);
         board_delay_ms(SENSOR_TASK_CYCLE);
     }

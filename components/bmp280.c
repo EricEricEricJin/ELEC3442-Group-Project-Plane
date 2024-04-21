@@ -115,6 +115,11 @@ int bmp280_update(bmp280_t dev)
         dev->data.pressure = p / 256.0f;
     }
     // printf("BMP update! %f\n", dev->data.pressure);
+
+    // For testing when the BMP is burnt 
+    dev->data.pressure = 1.23456 * 1e5;
+    dev->data.temperature = 27.89;
+
     return 0;
 }
 
