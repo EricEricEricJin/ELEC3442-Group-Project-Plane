@@ -15,3 +15,6 @@ engine_test: engine_test.c ../bsp/*
 
 bmp280_test: bmp280_test.c ../bsp/* ../support/* ../components/bmp280.*
 	gcc $^ -I ../bsp/ -I ../components/ -I ../support/ -lwiringPi -o $@
+
+ms4525do_test: ms4525do_test.c ../bsp/* ../support/* ../components/ms4525do.*
+	gcc $^ -I ../bsp/ -I ../components/ -I ../support/ -lwiringPi -lm -o $@
