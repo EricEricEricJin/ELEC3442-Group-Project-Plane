@@ -82,9 +82,9 @@ void sensor_task(void const *argument)
     while (1)
     {
         // Update board data
-        data.volt_bat = board_adc_get_vbat() / 12.9f * 255.0f;
-        data.volt_bus = board_adc_get_vbus() / 5.5f * 255.0f;
-        data.volt_aux = board_adc_get_vaux() / 4.3f * 255.0f;
+        data.volt_bat = (uint8_t)(board_adc_get_vbat() / 12.9f * 255.0f);
+        data.volt_bus = (uint8_t)(board_adc_get_vbus() / 5.5f * 255.0f);
+        data.volt_aux = (uint8_t)(board_adc_get_vaux() / 4.3f * 255.0f);
         data.update_time_ms = board_get_millis();
 
         // Update IMU data
@@ -107,7 +107,7 @@ void sensor_task(void const *argument)
 
         // Update BMP data
         log_i("raw %f, %f", bmp.data.pressure, bmp.data.temperature);
-        data.pressure = (uint16_t)(bmp.data.pressure / 2.0f);
+        data.pressure = (int16_t)((bmp.data.pressure - 1e5) * 10.0f);
         data.temperature = (int16_t)(bmp.data.temperature * 100.0f);
         log_i("psr = %x, tmp = %x\n", data.pressure, data.temperature);
         shared_mem_update(DATA_MSG_ID, &data);
