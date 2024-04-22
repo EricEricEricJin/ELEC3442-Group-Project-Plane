@@ -11,6 +11,7 @@
 struct communication ct_comm;
 struct plane_data ct_data;
 struct ground_cmd ct_cmd;
+struct fdbk_data ct_fdbk;
 
 void communicate_task_init()
 {
@@ -23,10 +24,12 @@ void communicate_send_task(void const *argument)
     printf("communicate send task start \n");
     while (1)
     {
-        shared_mem_get(DATA_MSG_ID, ct_comm.data);
-        
-        // for test only
-        // ct_comm.data->a_x = 1234;
+        shared_mem_get(DATA_MSG_ID, &ct_data);
+        shared_mem_get(FDBK_MSG_ID, &ct_fdbk);
+        ct_data.elevator = ct_fdbk.elevator;
+        ct_data.aileron_l = ct_fdbk.aileron_l;
+        ct_data.aileron_r = ct_fdbk.aileron_r;
+        ct_data.rudder = ct_fdbk.rudder;
 
         communication_send(&ct_comm);
         usleep(ct_comm.period_us);

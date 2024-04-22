@@ -75,6 +75,7 @@ struct pid_param elevator_outer_param =
 struct communication comm;
 struct ground_cmd cmd;
 struct plane_data data;
+struct fdbk_data fdbk;
 
 // const char *IP = "127.0.0.1";
 // const uint16_t PORT = 1234;
@@ -214,6 +215,13 @@ void plane_task(void const *argument)
         // printf("eng1=%d:%f\teng2=%d:%f\t\n", cmd.eng_1, (float)(cmd.thrust_1) / UINT16_MAX, cmd.eng_2, (float)(cmd.thrust_2) / UINT16_MAX);
         esc_set_thrust(&engine_1, (float)(cmd.thrust_1) / UINT16_MAX);
         esc_set_thrust(&engine_2, (float)(cmd.thrust_2) / UINT16_MAX);
+
+        // Update feedback
+        fdbk.elevator = (int8_t)(elevator_out * 127.0f);
+        fdbk.aileron_l = (int8_t)(aileron_out * 127.0f);
+        fdbk.aileron_r = (int8_t)(-aileron_out * 127.0f);
+        fdbk.rudder = (int8_t)(rudder_out * 127.0f);
+        shared_mem_update(FDBK_MSG_ID, &fdbk);
 
     task_loop_end:
         board_delay_ms(TASK_CYCLE_PERIOD);

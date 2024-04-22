@@ -40,6 +40,7 @@ void sys_init()
     // create shared memories
     shared_mem_create(CMD_MSG_ID, sizeof(struct ground_cmd));
     shared_mem_create(DATA_MSG_ID, sizeof(struct plane_data));
+    shared_mem_create(FDBK_MSG_ID, sizeof(struct fdbk_data));
 
     // sensor task init
     pthread_create(&sensor_thread, NULL,  (void*(*)(void*))&sensor_task, NULL);

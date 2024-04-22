@@ -26,8 +26,16 @@ struct __attribute__((__packed__)) plane_data
     uint8_t volt_bat, volt_bus, volt_aux;
     int16_t pressure;
     int16_t temperature;
+
+    int8_t elevator, aileron_l, aileron_r, rudder;
+
     uint32_t update_time_ms;
     uint16_t crc16;
+};
+
+struct fdbk_data 
+{
+    int8_t elevator, aileron_l, aileron_r, rudder;
 };
 
 #endif
