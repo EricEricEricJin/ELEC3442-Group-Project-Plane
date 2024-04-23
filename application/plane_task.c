@@ -81,7 +81,7 @@ struct fdbk_data fdbk;
 // const uint16_t PORT = 1234;
 
 struct ctrl_surface ctrl_aileron, ctrl_elevator, ctrl_rudder;
-struct servo servo_aileron_left, servo_aileron_right, servo_elevator, servo_rudder;
+struct servo servo_aileron_left, servo_aileron_right, servo_elevator, servo_rudder, servo_wheel;
 struct esc engine_1, engine_2;
 
 void offline_task();
@@ -100,21 +100,21 @@ void plane_task(void const *argument)
     servo_init(&servo_aileron_right, SERVO_180DEG, 0, 0, 45, -45);
     servo_init(&servo_elevator, SERVO_180DEG, 4, 0, 45, -45);
     servo_init(&servo_rudder, SERVO_180DEG, 3, 0, 45, -45);
+    servo_init(&servo_wheel, SERVO_180DEG, 5, 0, 45, -45);
+
+    // Keep servos on
+    servo_turn_on(&servo_aileron_left);
+    servo_turn_on(&servo_aileron_right);
+    servo_turn_on(&servo_elevator);
+    servo_turn_on(&servo_rudder);
+    servo_turn_on(&servo_wheel);
 
     // Initialize engines
     esc_init(&engine_1, 14, CURRENT_CH1, 1000, 2000);
     esc_init(&engine_2, 15, CURRENT_CH2, 1000, 2000);
 
-    // // Initialize communication
-    // communication_init(&comm, &cmd, &data, IP, PORT, 0xffff);
-    // communication_set_send_rate(&comm, 50000);
-    // communication_start(&comm);
-
     int comm_state;
     float aileron_out, elevator_out, rudder_out;
-
-    // struct plane_data data;
-    // struct ground_cmd cmd;
 
     float locked_pitch, locked_roll, locked_yaw;
 
@@ -141,13 +141,7 @@ void plane_task(void const *argument)
         //     cmd.opmode_rudder = OPMODE_MANUAL;
         // }
 
-        offline = 0;
-
-        // Keep servos on
-        servo_turn_on(&servo_aileron_left);
-        servo_turn_on(&servo_aileron_right);
-        servo_turn_on(&servo_elevator);
-        servo_turn_on(&servo_rudder);
+        // offline = 0;
 
         // update elevator
         ctrl_surface_set_mode(&ctrl_aileron, cmd.opmode_elevator);
@@ -201,6 +195,7 @@ void plane_task(void const *argument)
         servo_set_deg_trimmed(&servo_aileron_right, aileron_out * (-45.0f));
         servo_set_deg_trimmed(&servo_elevator, elevator_out * 45.0f);
         servo_set_deg_trimmed(&servo_rudder, rudder_out * 45.0f);
+        servo_set_deg_trimmed(&servo_wheel, rudder_out * 45.0f);
 
         // printf("eng1=%d:%f\teng2=%d:%f\t\n", cmd.eng_1, (float)(cmd.thrust_1) / UINT16_MAX, cmd.eng_2, (float)(cmd.thrust_2) / UINT16_MAX);
         esc_set_thrust(&engine_1, (float)(cmd.thrust_1) / UINT16_MAX);
