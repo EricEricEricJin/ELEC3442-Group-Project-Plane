@@ -96,8 +96,8 @@ void plane_task(void const *argument)
     ctrl_surface_init(&ctrl_rudder, rudder_inter_param, rudder_outer_param);
 
     // Initialize servos
-    servo_init(&servo_aileron_left, SERVO_180DEG, 1, 0, 45, -45);
-    servo_init(&servo_aileron_right, SERVO_180DEG, 0, 0, -45, 45);
+    servo_init(&servo_aileron_left, SERVO_180DEG, 1, 0, -45, 45);
+    servo_init(&servo_aileron_right, SERVO_180DEG, 0, 0, 45, -45);
     servo_init(&servo_elevator, SERVO_180DEG, 4, 0, 45, -45);
     servo_init(&servo_rudder, SERVO_180DEG, 3, 0, 45, -45);
 
@@ -202,6 +202,10 @@ void plane_task(void const *argument)
         servo_set_deg_trimmed(&servo_elevator, elevator_out * 45.0f);
         servo_set_deg_trimmed(&servo_rudder, rudder_out * 45.0f);
 
+        // printf("eng1=%d:%f\teng2=%d:%f\t\n", cmd.eng_1, (float)(cmd.thrust_1) / UINT16_MAX, cmd.eng_2, (float)(cmd.thrust_2) / UINT16_MAX);
+        esc_set_thrust(&engine_1, (float)(cmd.thrust_1) / UINT16_MAX);
+        esc_set_thrust(&engine_2, (float)(cmd.thrust_2) / UINT16_MAX);
+        
         // Set engines
         if (cmd.eng_1)
             esc_start(&engine_1);
@@ -212,15 +216,23 @@ void plane_task(void const *argument)
         else
             esc_stop(&engine_2);
         
-        // printf("eng1=%d:%f\teng2=%d:%f\t\n", cmd.eng_1, (float)(cmd.thrust_1) / UINT16_MAX, cmd.eng_2, (float)(cmd.thrust_2) / UINT16_MAX);
-        esc_set_thrust(&engine_1, (float)(cmd.thrust_1) / UINT16_MAX);
-        esc_set_thrust(&engine_2, (float)(cmd.thrust_2) / UINT16_MAX);
 
         // Update feedback
-        fdbk.elevator = (int8_t)(elevator_out * 127.0f);
+        fdbk.elevator = (int8_t)(-elevator_out * 127.0f);
         fdbk.aileron_l = (int8_t)(aileron_out * 127.0f);
         fdbk.aileron_r = (int8_t)(-aileron_out * 127.0f);
         fdbk.rudder = (int8_t)(rudder_out * 127.0f);
+
+        if (esc_get_state(&engine_1) == ESC_RUNNING)
+            fdbk.eng_1 = (int8_t)(esc_get_thrust(&engine_1) * 100.0f);
+        else
+            fdbk.eng_1 = -1;
+
+        if (esc_get_state(&engine_2) == ESC_RUNNING)
+            fdbk.eng_2 = (int8_t)(esc_get_thrust(&engine_2) * 100.0f);
+        else
+            fdbk.eng_2 = -1;
+         
         shared_mem_update(FDBK_MSG_ID, &fdbk);
 
     task_loop_end:

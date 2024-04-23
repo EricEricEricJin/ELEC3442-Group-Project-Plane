@@ -30,6 +30,8 @@ void communicate_send_task(void const *argument)
         ct_data.aileron_l = ct_fdbk.aileron_l;
         ct_data.aileron_r = ct_fdbk.aileron_r;
         ct_data.rudder = ct_fdbk.rudder;
+        ct_data.eng_1 = ct_fdbk.eng_1;
+        ct_data.eng_2 = ct_fdbk.eng_2;
 
         communication_send(&ct_comm);
         usleep(ct_comm.period_us);
