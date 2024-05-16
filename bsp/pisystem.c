@@ -12,6 +12,8 @@ float pisystem_get_cpu_temp()
 {
     int n;
     FILE *f_cputemp = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
+    if (f_cputemp == NULL) return 0.0;
     fscanf(f_cputemp, "%d", &n);
     return n / 1000.0f;
+    // return 0.0;
 }

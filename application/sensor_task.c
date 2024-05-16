@@ -85,6 +85,7 @@ void sensor_task(void const *argument)
         data.volt_bat = (uint8_t)(board_adc_get_vbat() / 12.9f * 255.0f);
         data.volt_bus = (uint8_t)(board_adc_get_vbus() / 5.5f * 255.0f);
         data.volt_aux = (uint8_t)(board_adc_get_vaux() / 4.3f * 255.0f);
+        data.cpu_tmp = (int16_t)(board_get_cpu_temp() * 100.0);
         data.update_time_ms = board_get_millis();
 
         // Update IMU data

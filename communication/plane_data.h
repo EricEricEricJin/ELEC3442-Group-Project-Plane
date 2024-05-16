@@ -28,6 +28,7 @@ struct __attribute__((__packed__)) plane_data
     int16_t temperature;
 
     int8_t elevator, aileron_l, aileron_r, rudder, eng_1, eng_2;
+    int16_t cpu_tmp;
 
     uint32_t update_time_ms;
     uint16_t crc16;

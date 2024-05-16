@@ -16,6 +16,11 @@ struct fdbk_data ct_fdbk;
 void communicate_task_init()
 {
     int ret = communication_init(&ct_comm, &ct_cmd, &ct_data, MY_PORT, SERVER_IP, SERVER_PORT, 0xffff, 100000);
+    if (ret < 0)
+    {
+        printf("comm ret = %d\n", ret);
+        exit(1);
+    }
     printf("communicate task init = ret\n");
 }
 
